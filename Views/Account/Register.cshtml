@@ -1,26 +1,50 @@
-﻿@{
-    ViewData["Title"] = "User Register";
+@model FoodShoppingApp.Models.CustomerRegisterViewModel
+
+@{
+    ViewData["Title"] = "Customer Registration";
 }
 
-<h2>User Register</h2>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-1 fw-bold">Create an Account</h2>
+                <p class="text-muted text-center mb-4 small">Join FoodShoppingApp to order your favorite meals</p>
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <form asp-controller="Account" asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Email Address</label>
+                        <input asp-for="Email" class="form-control form-control-lg" placeholder="name@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                        <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="At least 6 characters" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg" placeholder="Repeat your password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 mb-3 fw-semibold">Register</button>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top">
+                    <p class="text-muted mb-0">Already have an account? <a asp-action="Login" class="text-decoration-none fw-semibold">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<form asp-action="Register" method="post">
-    <div class="mb-3">
-        <label>Email</label>
-        <input name="email" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label>Password</label>
-        <input name="password" type="password" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-success">
-        Register
-    </button>
-</form>

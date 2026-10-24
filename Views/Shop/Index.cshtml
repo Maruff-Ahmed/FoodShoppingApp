@@ -1,79 +1,124 @@
-﻿@model IEnumerable<FoodShoppingApp.Models.Product>
+@model IEnumerable<FoodShoppingApp.Models.Product>
 
-<h2 class="mb-4 text-center text-dark fw-bold">Food Shop</h2>
+@{
+    ViewData["Title"] = "Food Menu & Shop";
+    int? currentCat = ViewBag.CurrentCategory as int?;
+    string currentSearch = ViewBag.CurrentSearch as string ?? "";
+    string currentSort = ViewBag.CurrentSort as string ?? "name";
+}
 
-<!-- CATEGORY FILTER -->
-<div class="mb-5 text-center">
-    <a class="btn btn-outline-dark btn-sm mx-1 mb-2" href="/Shop/Index">All</a>
-    @foreach (var cat in ViewBag.Categories)
-    {
-        <a class="btn btn-outline-primary btn-sm mx-1 mb-2"
-           href="/Shop/Index?categoryId=@cat.Id">
-            @cat.Name
+<div class="container py-4">
+    <!-- HERO / TITLE -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold display-6 mb-2">Our Delicious Food Menu</h1>
+        <p class="text-muted">Freshly prepared, fast delivery, and chef-crafted meals</p>
+    </div>
+
+    <!-- SEARCH & SORT BAR -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-center">
+                <input type="hidden" name="categoryId" value="@currentCat" />
+
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">🔍</span>
+                        <input type="text" name="search" class="form-control border-start-0" placeholder="Search burger, pizza, fries, beverage..." value="@currentSearch" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="sortBy" class="form-select" onchange="this.form.submit()">
+                        <option value="name" selected="@(currentSort == "name")">Sort by: Name (A-Z)</option>
+                        <option value="price_asc" selected="@(currentSort == "price_asc")">Sort by: Price (Low to High)</option>
+                        <option value="price_desc" selected="@(currentSort == "price_desc")">Sort by: Price (High to Low)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    @if (!string.IsNullOrEmpty(currentSearch) || currentCat.HasValue)
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary" title="Reset filters">✕</a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CATEGORY PILLS -->
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+        <a asp-action="Index" asp-route-categoryId="" asp-route-search="@currentSearch" asp-route-sortBy="@currentSort"
+           class="btn rounded-pill px-3 py-1 @(!currentCat.HasValue ? "btn-dark" : "btn-outline-dark")">
+            All Items
         </a>
-    }
-</div>
+        @foreach (var cat in ViewBag.Categories as IEnumerable<FoodShoppingApp.Models.Category> ?? Enumerable.Empty<FoodShoppingApp.Models.Category>())
+        {
+            <a asp-action="Index" asp-route-categoryId="@cat.Id" asp-route-search="@currentSearch" asp-route-sortBy="@currentSort"
+               class="btn rounded-pill px-3 py-1 @(currentCat == cat.Id ? "btn-danger" : "btn-outline-secondary")">
+                @cat.Name
+            </a>
+        }
+    </div>
 
-<div class="row">
-    @foreach (var item in Model)
+    <!-- PRODUCT GRID -->
+    @if (!Model.Any())
     {
-        <div class="col-md-3 mb-4">
-            <div class="card h-100 shadow-sm border-0 rounded-3 product-card">
-                <div class="overflow-hidden rounded-top">
-                    <img src="@item.ImageUrl" class="card-img-top transition-img"
-                         style="height:180px; object-fit:cover;" />
-                </div>
+        <div class="text-center py-5">
+            <div class="display-3 text-muted mb-3">🔍</div>
+            <h4 class="fw-bold">No food items found</h4>
+            <p class="text-muted">Try adjusting your search keyword or selected category filter.</p>
+            <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4">View All Menu Items</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden food-card">
+                        <div class="position-relative">
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                <img src="@item.ImageUrl" class="card-img-top food-card-img" alt="@item.Name"
+                                     style="height: 180px; object-fit: cover;" onerror="this.src='/favicon.ico';" />
+                            </a>
+                            <span class="badge bg-dark bg-opacity-75 position-absolute top-0 end-0 m-2 rounded-pill">
+                                @(item.Category?.Name ?? "Menu")
+                            </span>
+                        </div>
 
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">@item.Name</h5>
-                    <p class="text-muted mb-2">@item.Category?.Name</p>
-                    <p class="h6 text-danger fw-bold">৳ @item.Price</p>
-                </div>
+                        <div class="card-body d-flex flex-column text-center p-3">
+                            <h5 class="card-title fw-bold mb-1">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
+                                    @item.Name
+                                </a>
+                            </h5>
+                            <p class="text-muted small text-truncate mb-2">
+                                @(string.IsNullOrWhiteSpace(item.Description) ? "Fresh and delicious food item." : item.Description)
+                            </p>
+                            <div class="mt-auto">
+                                <div class="fs-5 fw-bold text-danger mb-3">৳ @item.Price.ToString("0.00")</div>
 
-                <div class="card-footer d-flex justify-content-center gap-2 bg-white border-0">
-                    <a class="btn btn-primary btn-sm rounded-pill px-3"
-                       href="/Shop/Details/@item.Id">
-                        View
-                    </a>
-                    <a class="btn btn-success btn-sm rounded-pill px-3"
-                       href="/Cart/Add/@item.Id">
-                        Add to Cart
-                    </a>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a class="btn btn-sm btn-outline-secondary rounded-pill px-3" asp-action="Details" asp-route-id="@item.Id">
+                                        Details
+                                    </a>
+
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="productId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-semibold">
+                                            + Add
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
 </div>
-
-<style>
-    /* Hover lift effect */
-    .product-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-        .product-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-
-    /* Image zoom effect */
-    .transition-img {
-        transition: transform 0.3s;
-    }
-
-    .product-card:hover .transition-img {
-        transform: scale(1.1);
-    }
-
-    /* Category button hover */
-    .btn-outline-primary:hover {
-        color: #fff !important;
-        background-color:black;
-        border-color: black ;
-    }
-
-    /* Product title hover */
-    .card-body h5:hover {
-        color: black;
-    }
-</style>

@@ -1,45 +1,99 @@
-﻿@model IEnumerable<FoodShoppingApp.Models.Product>
+@model IEnumerable<FoodShoppingApp.Models.Product>
 
-<h2>Product Management</h2>
+@{
+    ViewData["Title"] = "Product Management";
+}
 
-<p>
-    <a asp-controller="Product" asp-action="Create" class="btn btn-success">Add New Product</a>
-</p>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Product Management</h2>
+            <p class="text-muted small mb-0">Create, update, and manage your food items and catalog</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                + Add New Product
+            </a>
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-secondary ms-2">
+                ← Dashboard
+            </a>
+        </div>
+    </div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price (BDT)</th>
-            <th>Image</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Category?.Name ?? "Unassigned"</td>
-                <td>@item.Price.ToString("0.00")</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@item.ImageUrl" alt="@item.Name" width="80" height="60" />
-                    }
-                    else
-                    {
-                        <span>No Image</span>
-                    }
-                </td>
-                <td>@item.Description ?? "No Description"</td>
-                <td>
-                    <a asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Edit</a>
-                    <a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3" style="width: 10%;">Image</th>
+                            <th style="width: 25%;">Product Name</th>
+                            <th style="width: 20%;">Category</th>
+                            <th style="width: 15%;">Price</th>
+                            <th style="width: 15%;">Description</th>
+                            <th class="text-end pe-3" style="width: 15%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">
+                                    No products found. Click "Add New Product" to create one.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-3">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" class="rounded" style="width: 60px; height: 50px; object-fit: cover;" onerror="this.src='/favicon.ico';" />
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-dark border">No Image</span>
+                                        }
+                                    </td>
+                                    <td class="fw-semibold">@item.Name</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @(item.Category?.Name ?? "Unassigned")
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold text-danger">৳ @item.Price.ToString("0.00")</td>
+                                    <td class="text-muted small text-truncate" style="max-width: 200px;">
+                                        @(string.IsNullOrWhiteSpace(item.Description) ? "No description" : item.Description)
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

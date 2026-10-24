@@ -1,63 +1,145 @@
-﻿@model List<FoodShoppingApp.Models.CartItem>
+@model List<FoodShoppingApp.Models.CartItem>
 
-<h2 class="text-center mb-4 text-danger">🛒 Your Cart</h2>
-
-@if (!Model.Any())
-{
-    <div class="alert alert-warning text-center">
-        Your cart is empty.
-    </div>
+@{
+    ViewData["Title"] = "Your Shopping Cart";
 }
-else
-{
-    <div class="card shadow-sm mb-4">
-        <div class="card-body p-0">
-            <table class="table table-hover table-bordered mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        decimal grandTotal = 0;
-                    }
-                    @foreach (var item in Model)
-                    {
-                        var total = item.Product.Price * item.Quantity;
-                        grandTotal += total;
 
-                        <tr>
-                            <td>@item.Product.Name</td>
-                            <td>৳ @item.Product.Price</td>
-                            <td>@item.Quantity</td>
-                            <td>৳ @total</td>
-                            <td>
-                                <a class="btn btn-outline-danger btn-sm"
-                                   href="/Cart/Remove/@item.Product.Id">
-                                    Remove
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+<div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="text-danger mb-0">Grand Total: ৳ @grandTotal</h4>
-        <div>
-            <a class="btn btn-secondary me-2" href="/Shop/Index">
-                Continue Shopping
-            </a>
-            <a class="btn btn-success" href="/Checkout/Index">
-                Proceed to Checkout
-            </a>
-        </div>
+        <h2 class="fw-bold mb-0">🛒 Shopping Cart</h2>
+        @if (Model.Any())
+        {
+            <form asp-action="Clear" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Clear all items from your cart?');">
+                    Clear Cart
+                </button>
+            </form>
+        }
     </div>
-}
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="card shadow-sm border-0 rounded-3 text-center py-5">
+            <div class="card-body">
+                <div class="display-1 text-muted mb-3">🍽️</div>
+                <h4 class="fw-bold">Your cart is currently empty</h4>
+                <p class="text-muted mb-4">Discover delicious food and beverages to add to your order.</p>
+                <a class="btn btn-primary btn-lg rounded-pill px-4" asp-controller="Shop" asp-action="Index">
+                    Browse Food Menu
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        decimal grandTotal = 0;
+
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="ps-3" style="width: 40%;">Product</th>
+                                <th class="text-center" style="width: 20%;">Price</th>
+                                <th class="text-center" style="width: 20%;">Quantity</th>
+                                <th class="text-end" style="width: 15%;">Subtotal</th>
+                                <th class="text-center pe-3" style="width: 5%;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var lineTotal = item.Product.Price * item.Quantity;
+                                grandTotal += lineTotal;
+
+                                <tr>
+                                    <td class="ps-3">
+                                        <div class="d-flex align-items-center">
+                                            @if (!string.IsNullOrEmpty(item.Product.ImageUrl))
+                                            {
+                                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="rounded me-3" style="width: 55px; height: 55px; object-fit: cover;" onerror="this.src='/favicon.ico';" />
+                                            }
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">@item.Product.Name</h6>
+                                                <small class="text-muted">@item.Product.Category?.Name</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">৳ @item.Product.Price.ToString("0.00")</td>
+                                    <td class="text-center">
+                                        <div class="d-inline-flex align-items-center">
+                                            <!-- Decrement -->
+                                            <form asp-action="UpdateQuantity" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="productId" value="@item.Product.Id" />
+                                                <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2 py-0" title="Decrease">−</button>
+                                            </form>
+
+                                            <span class="mx-2 fw-bold">@item.Quantity</span>
+
+                                            <!-- Increment -->
+                                            <form asp-action="UpdateQuantity" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="productId" value="@item.Product.Id" />
+                                                <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2 py-0" title="Increase">+</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    <td class="text-end fw-semibold">৳ @lineTotal.ToString("0.00")</td>
+                                    <td class="text-center pe-3">
+                                        <form asp-action="Remove" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.Product.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove item">
+                                                ✕
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-between align-items-center">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <a class="btn btn-outline-secondary rounded-pill px-4" asp-controller="Shop" asp-action="Index">
+                    ← Continue Shopping
+                </a>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="card shadow-sm border-0 rounded-3 p-3 d-inline-block text-start w-100" style="max-width: 380px;">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Estimated Total:</span>
+                        <span class="fs-4 fw-bold text-danger">৳ @grandTotal.ToString("0.00")</span>
+                    </div>
+                    <a class="btn btn-success btn-lg w-100 rounded-pill py-2 fw-semibold" asp-controller="Checkout" asp-action="Index">
+                        Proceed to Checkout →
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

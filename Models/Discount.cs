@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodShoppingApp.Models
 {
@@ -6,12 +6,12 @@ namespace FoodShoppingApp.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public string Code { get; set; }   // e.g. SAVE10
+        [Required(ErrorMessage = "Promo code is required.")]
+        public string Code { get; set; } = string.Empty;
 
-        [Range(1, 100)]
-        public int Percentage { get; set; } // 10 = 10%
+        [Range(1, 100, ErrorMessage = "Percentage must be between 1% and 100%.")]
+        public int Percentage { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

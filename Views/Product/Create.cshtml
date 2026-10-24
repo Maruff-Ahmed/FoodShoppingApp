@@ -1,49 +1,68 @@
-﻿@model FoodShoppingApp.Models.Product
+@model FoodShoppingApp.Models.Product
 
+@{
+    ViewData["Title"] = "Add New Product";
+}
 
-<h2>Create Product</h2>
-<div asp-validation-summary="All" class="text-danger"></div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-3">Add New Food Item</h3>
 
-<form asp-action="Create" asp-controller="Product" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label asp-for="CategoryId" class="form-label">
-                Category ID
-            </label>
-            <input asp-for="CategoryId"
-                   type="number"
-                   class="form-control"
-                   placeholder="Enter Category ID (e.g. 1)" />
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-semibold">Product Name</label>
+                            <input asp-for="Name" class="form-control" placeholder="e.g. Classic Beef Burger" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label fw-semibold">Category</label>
+                                <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Price" class="form-label fw-semibold">Price (BDT ৳)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">৳</span>
+                                    <input asp-for="Price" class="form-control" step="0.01" min="0.01" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImageUrl" class="form-label fw-semibold">Image URL or Local Path</label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="/images/burger.jpg or https://..." />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            <small class="text-muted">You can use sample images like <code>/images/burger.jpg</code>, <code>/images/pizza.jpg</code>, <code>/images/fries.jpg</code>, <code>/images/cocacola.jpg</code></small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-semibold">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter ingredients, flavor profile, or portion details..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">Save Product</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" step="0.01" />
-        <span asp-validation-for="Price" class="text-danger"></span>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="ImageUrl" class="form-label"></label>
-        <input asp-for="ImageUrl" class="form-control" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

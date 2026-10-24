@@ -1,125 +1,105 @@
-﻿<div class="container py-5">
+@{
+    ViewData["Title"] = "Fresh Food Delivery";
+}
 
-    <h2 class="text-center mb-5 fw-bold"
-        style="letter-spacing:1px; color:#2b2b2b;">
-        Food Shopping System
-    </h2>
+<div class="py-5">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-    <div class="row justify-content-center gx-5">
-
-        <!-- Admin Panel -->
-        <div class="col-md-4">
-            <div class="card h-100 border-0"
-                 style="
-                 background: linear-gradient(145deg,#e0e0e0,#c8c8c8);
-                 border-radius:20px;
-                 box-shadow:0 25px 50px rgba(0,0,0,0.2);
-                 transition: transform 0.3s, box-shadow 0.3s;">
-
-                <div class="card-body text-center p-5">
-
-                    <div class="mb-4"
-                         style="
-                         width:80px;
-                         height:80px;
-                         margin:auto;
-                         border-radius:50%;
-                         background:#343a40;
-                         color:#fff;
-                         display:flex;
-                         align-items:center;
-                         justify-content:center;
-                         font-size:36px;">
-                        ⚙
-                    </div>
-
-                    <h4 class="fw-semibold mb-2 text-dark">
-                        Admin Panel
-                    </h4>
-
-                    <p class="text-muted mb-4">
-                        Manage products, categories & orders
-                    </p>
-
-                    <a asp-controller="Admin"
-                       asp-action="Login"
-                       class="btn"
-                       style="
-                       border-radius:30px;
-                       padding:12px 30px;
-                       background: center;
-                       color:black;
-                       font-weight:600;
-                       transition: 0.3s;">
-                        Enter Admin
+    <!-- HERO SECTION -->
+    <div class="p-5 mb-5 rounded-4 hero-banner text-white shadow-lg position-relative overflow-hidden"
+         style="background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-lg-7 py-3">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">🔥 Fast Delivery • 100% Fresh</span>
+                <h1 class="display-4 fw-bold mb-3">Delicious Food Delivered Right To Your Doorstep</h1>
+                <p class="lead mb-4 opacity-90">
+                    Explore handcrafted burgers, cheesy pizzas, crispy fries, and refreshing cold drinks with instant Cash on Delivery checkout.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow-sm">
+                        🍔 Explore Food Menu
                     </a>
-
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-semibold">
+                        🛒 View Cart
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+                <div class="display-1" style="font-size: 8rem; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.3));">
+                    🍕
                 </div>
             </div>
         </div>
-
-        <!-- User Panel -->
-        <div class="col-md-4">
-            <div class="card h-100 border-0"
-                 style="
-                 background: linear-gradient(145deg,black,#cacaca);
-                 border-radius:20px;
-                 box-shadow:0 25px 50px rgba(0,0,0,0.2);
-                 transition: transform 0.3s, box-shadow 0.3s;">
-
-                <div class="card-body text-center p-5">
-
-                    <div class="mb-4"
-                         style="
-                         width:80px;
-                         height:80px;
-                         margin:auto;
-                         border-radius:50%;
-                         background:#6c757d;
-                         color:#fff;
-                         display:flex;
-                         align-items:center;
-                         justify-content:center;
-                         font-size:36px;">
-                        🛒
-                    </div>
-
-                    <h4 class="fw-semibold mb-2 text-dark">
-                        User Panel
-                    </h4>
-
-                    <p class="text-muted mb-4">
-                        Browse food & place orders easily
-                    </p>
-
-                    <a href="/Shop/Index"
-                       class="btn"
-                       style="
-                       border-radius:30px;
-                       padding:12px 30px;
-                       background: linear-gradient(45deg,#ff3b3f,#000);
-                       color:#fff;
-                       font-weight:600;
-                       transition: 0.3s;">
-                        Enter Shop
-                    </a>
-
-                </div>
-            </div>
-        </div>
-
     </div>
 
+    <!-- QUICK HIGHLIGHTS -->
+    <div class="row g-4 mb-5 text-center">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
+                <div class="feature-icon mb-3">⚡</div>
+                <h5 class="fw-bold">Fast & Hot Delivery</h5>
+                <p class="text-muted small mb-0">Every meal is prepared on order and packaged to ensure oven-hot crispiness upon arrival.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
+                <div class="feature-icon mb-3">🏷️</div>
+                <h5 class="fw-bold">Exclusive Coupons</h5>
+                <p class="text-muted small mb-0">Use verified promo codes like <code>SAVE10</code> during checkout to receive instant discounts on every meal.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
+                <div class="feature-icon mb-3">💵</div>
+                <h5 class="fw-bold">Cash On Delivery</h5>
+                <p class="text-muted small mb-0">No credit card required. Verify your meal delivery first and pay securely with cash.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PORTALS SECTION -->
+    <div class="mb-4 text-center">
+        <h3 class="fw-bold mb-2">Platform Access Portals</h3>
+        <p class="text-muted">Choose your access view below</p>
+    </div>
+
+    <div class="row justify-content-center g-4">
+        <!-- Customer Portal -->
+        <div class="col-md-5">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 text-center portal-card">
+                <div class="card-body">
+                    <div class="portal-badge bg-danger bg-opacity-10 text-danger mb-3">🛒</div>
+                    <h4 class="fw-bold mb-2">Customer Storefront</h4>
+                    <p class="text-muted mb-4 small">
+                        Browse the complete food catalog, filter by food categories, adjust cart quantities, and place orders.
+                    </p>
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold w-100">
+                        Enter Food Store
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Administrator Portal -->
+        <div class="col-md-5">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 text-center portal-card">
+                <div class="card-body">
+                    <div class="portal-badge bg-dark bg-opacity-10 text-dark mb-3">⚙️</div>
+                    <h4 class="fw-bold mb-2">Administration Control</h4>
+                    <p class="text-muted mb-4 small">
+                        Manage catalog items, menu categories, active orders, customer invoices, and promotional coupon codes.
+                    </p>
+                    <a asp-controller="Admin" asp-action="Login" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold w-100">
+                        Enter Admin Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<style>
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-    }
-
-    .btn:hover {
-        background: linear-gradient(45deg,#000,#ff3b3f);
-        color: #fff;
-    }
-</style>

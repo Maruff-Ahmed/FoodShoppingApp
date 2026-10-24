@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
 namespace FoodShoppingApp.Helpers
@@ -10,10 +10,10 @@ namespace FoodShoppingApp.Helpers
             session.SetString(key, JsonSerializer.Serialize(value));
         }
 
-        public static T GetObject<T>(this ISession session, string key)
+        public static T? GetObject<T>(this ISession session, string key)
         {
             var value = session.GetString(key);
-            return value == null ? default : JsonSerializer.Deserialize<T>(value);
+            return string.IsNullOrEmpty(value) ? default : JsonSerializer.Deserialize<T>(value);
         }
     }
 }

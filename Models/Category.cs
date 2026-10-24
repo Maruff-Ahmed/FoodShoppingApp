@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodShoppingApp.Models
 {
@@ -7,9 +7,9 @@ namespace FoodShoppingApp.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required(ErrorMessage = "Category name is required.")]
+        public string Name { get; set; } = string.Empty;
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

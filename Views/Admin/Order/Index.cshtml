@@ -1,32 +1,132 @@
-﻿@model IEnumerable<FoodShoppingApp.Models.Order>
+@model IEnumerable<FoodShoppingApp.Models.Order>
 
-<h2>All Orders</h2>
+@{
+    ViewData["Title"] = "Order Management";
+    string currentStatus = ViewBag.CurrentStatus as string ?? "All";
+    string currentSearch = ViewBag.CurrentSearch as string ?? "";
+}
 
-<table class="table table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Total Amount</th>
-            <th>Total Items</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
-            <tr>
-                <td>#@order.Id</td>
-                <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
-                <td>৳ @order.TotalAmount</td>
-                <td>@order.OrderItems.Sum(i => i.Quantity)</td>
-                <td>
-                    <a class="btn btn-sm btn-primary"
-                       href="/Admin/Order/Details/@order.Id">
-                        View
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Order Management</h2>
+            <p class="text-muted small mb-0">Track customer orders, review details, and update fulfillment statuses</p>
+        </div>
+        <div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-secondary">
+                ← Dashboard
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- FILTERS AND SEARCH -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-md-7 d-flex gap-1 flex-wrap">
+                    <a asp-action="Index" asp-route-status="All" asp-route-search="@currentSearch"
+                       class="btn btn-sm @(currentStatus == "All" ? "btn-dark" : "btn-outline-dark")">All</a>
+                    <a asp-action="Index" asp-route-status="Pending" asp-route-search="@currentSearch"
+                       class="btn btn-sm @(currentStatus == "Pending" ? "btn-warning" : "btn-outline-warning")">Pending</a>
+                    <a asp-action="Index" asp-route-status="Processing" asp-route-search="@currentSearch"
+                       class="btn btn-sm @(currentStatus == "Processing" ? "btn-info" : "btn-outline-info")">Processing</a>
+                    <a asp-action="Index" asp-route-status="Delivered" asp-route-search="@currentSearch"
+                       class="btn btn-sm @(currentStatus == "Delivered" ? "btn-success" : "btn-outline-success")">Delivered</a>
+                    <a asp-action="Index" asp-route-status="Cancelled" asp-route-search="@currentSearch"
+                       class="btn btn-sm @(currentStatus == "Cancelled" ? "btn-danger" : "btn-outline-danger")">Cancelled</a>
+                </div>
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="hidden" name="status" value="@currentStatus" />
+                        <input type="text" name="search" class="form-control form-control-sm" placeholder="Search order ID or customer email..." value="@currentSearch" />
+                        <button type="submit" class="btn btn-sm btn-primary">Search</button>
+                        @if (!string.IsNullOrEmpty(currentSearch))
+                        {
+                            <a asp-action="Index" asp-route-status="@currentStatus" class="btn btn-sm btn-outline-secondary">Clear</a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3" style="width: 12%;">Order ID</th>
+                            <th style="width: 28%;">Customer Email</th>
+                            <th style="width: 18%;">Date & Time</th>
+                            <th class="text-center" style="width: 12%;">Items</th>
+                            <th class="text-center" style="width: 14%;">Status</th>
+                            <th class="text-end" style="width: 16%;">Total Amount</th>
+                            <th class="text-end pe-3" style="width: 10%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    No orders found matching the filter criteria.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var order in Model)
+                            {
+                                var badgeClass = order.Status switch
+                                {
+                                    "Pending" => "bg-warning text-dark",
+                                    "Processing" => "bg-info text-dark",
+                                    "Delivered" => "bg-success text-white",
+                                    "Cancelled" => "bg-danger text-white",
+                                    _ => "bg-secondary text-white"
+                                };
+
+                                <tr>
+                                    <td class="ps-3 fw-bold">#@order.Id</td>
+                                    <td>
+                                        <div class="fw-semibold">@(order.User?.Email ?? order.UserId)</div>
+                                    </td>
+                                    <td class="text-muted small">
+                                        @order.OrderDate.ToString("dd MMM yyyy, hh:mm tt")
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-light text-dark border">
+                                            @(order.OrderItems?.Sum(i => i.Quantity) ?? 0)
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge @badgeClass px-2 py-1">
+                                            @order.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-bold text-danger">
+                                        ৳ @order.TotalAmount.ToString("0.00")
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@order.Id">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

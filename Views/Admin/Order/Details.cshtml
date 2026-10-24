@@ -1,58 +1,168 @@
-﻿@model FoodShoppingApp.Models.Order
+@model FoodShoppingApp.Models.Order
 
-<h2>Order Details</h2>
+@{
+    ViewData["Title"] = $"Order #{Model.Id} Details";
 
-<p><strong>Order ID:</strong> #@Model.Id</p>
-<p><strong>User:</strong> @Model.User?.Email</p>
-<p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
-<p><strong>Payment:</strong> @Model.PaymentMethod</p>
-<p><strong>Status:</strong> @Model.Status</p>
-
-@if (!string.IsNullOrEmpty(Model.DiscountCode))
-{
-    <p class="text-success">
-        Discount (@Model.DiscountCode): -৳ @Model.DiscountAmount
-    </p>
+    var badgeClass = Model.Status switch
+    {
+        "Pending" => "bg-warning text-dark",
+        "Processing" => "bg-info text-dark",
+        "Delivered" => "bg-success text-white",
+        "Cancelled" => "bg-danger text-white",
+        _ => "bg-secondary text-white"
+    };
 }
 
-<h4>Total Paid: ৳ @Model.TotalAmount</h4>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Order #@Model.Id Details</h2>
+            <p class="text-muted small mb-0">Placed on @Model.OrderDate.ToString("dd MMMM yyyy, hh:mm tt")</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                ← Back to All Orders
+            </a>
+        </div>
+    </div>
 
-<hr />
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-<h4>Order Items</h4>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.OrderItems)
-        {
-            <tr>
-                <td>@item.Product.Name</td>
-                <td>@item.Quantity</td>
-                <td>৳ @item.Price</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-<hr />
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- ORDER ITEMS -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Order Items</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Item</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Unit Price</th>
+                                    <th class="text-end pe-3">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td class="ps-3">
+                                            <div class="fw-semibold">@(item.Product?.Name ?? $"Product #{item.ProductId}")</div>
+                                            <small class="text-muted">@(item.Product?.Category?.Name ?? "Unassigned")</small>
+                                        </td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">৳ @item.Price.ToString("0.00")</td>
+                                        <td class="text-end pe-3 fw-bold">৳ @((item.Price * item.Quantity).ToString("0.00"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-<h4>Update Order Status</h4>
-<form asp-action="UpdateStatus" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+            <!-- FINANCIAL SUMMARY -->
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <div class="row justify-content-end">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Items Subtotal:</span>
+                                <span class="fw-semibold">৳ @Model.OrderItems.Sum(i => i.Price * i.Quantity).ToString("0.00")</span>
+                            </div>
 
-    <select name="status" class="form-control w-25">
-        <option value="Pending" selected="@("Pending" == Model.Status)">Pending</option>
-        <option value="Processing" selected="@("Processing" == Model.Status)">Processing</option>
-        <option value="Delivered" selected="@("Delivered" == Model.Status)">Delivered</option>
-    </select>
+                            @if (!string.IsNullOrEmpty(Model.DiscountCode))
+                            {
+                                <div class="d-flex justify-content-between mb-2 text-success">
+                                    <span>Discount Promo (@Model.DiscountCode):</span>
+                                    <span>- ৳ @Model.DiscountAmount.ToString("0.00")</span>
+                                </div>
+                            }
 
-    <button class="btn btn-success mt-2">
-        Update Status
-    </button>
-</form>
+                            <hr />
+
+                            <div class="d-flex justify-content-between">
+                                <span class="fs-5 fw-bold">Grand Total:</span>
+                                <span class="fs-5 fw-bold text-danger">৳ @Model.TotalAmount.ToString("0.00")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- CUSTOMER & ORDER INFO -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Order Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted small">Customer Account</label>
+                        <div class="fw-semibold">@(Model.User?.Email ?? Model.UserId)</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small">Payment Method</label>
+                        <div class="fw-semibold">@Model.PaymentMethod</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small">Current Status</label>
+                        <div>
+                            <span class="badge @badgeClass px-3 py-2 fs-6">
+                                @Model.Status
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPDATE STATUS FORM -->
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Update Order Status</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Fulfillment Status</label>
+                            <select name="status" class="form-select">
+                                <option value="Pending" selected="@("Pending" == Model.Status)">Pending</option>
+                                <option value="Processing" selected="@("Processing" == Model.Status)">Processing</option>
+                                <option value="Delivered" selected="@("Delivered" == Model.Status)">Delivered</option>
+                                <option value="Cancelled" selected="@("Cancelled" == Model.Status)">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Save Status Change
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

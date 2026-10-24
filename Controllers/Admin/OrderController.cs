@@ -1,4 +1,5 @@
-﻿using FoodShoppingApp.Data;
+using FoodShoppingApp.Data;
+using FoodShoppingApp.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,22 +17,44 @@ namespace FoodShoppingApp.Controllers.Admin
             _context = context;
         }
 
-        // GET: Admin/Order/Index
-        public async Task<IActionResult> Index()
+        // GET: /Admin/Order/Index
+        public async Task<IActionResult> Index(string? status, string? search)
         {
-            // Include OrderItems and Product, also include User info
-            var orders = await _context.Orders
+            var query = _context.Orders
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(status) && status != "All")
+            {
+                query = query.Where(o => o.Status == status);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+                if (int.TryParse(term.Replace("#", ""), out var searchId))
+                {
+                    query = query.Where(o => o.Id == searchId || (o.User != null && o.User.Email!.Contains(term)));
+                }
+                else
+                {
+                    query = query.Where(o => o.User != null && o.User.Email!.Contains(term));
+                }
+            }
+
+            var orders = await query
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
 
-            // Explicitly specify view location
+            ViewBag.CurrentStatus = status ?? "All";
+            ViewBag.CurrentSearch = search ?? string.Empty;
+
             return View("~/Views/Admin/Order/Index.cshtml", orders);
         }
 
-        // GET: Admin/Order/Details/5
+        // GET: /Admin/Order/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var order = await _context.Orders
@@ -41,26 +64,35 @@ namespace FoodShoppingApp.Controllers.Admin
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
+            {
                 return NotFound();
+            }
 
-            // Explicitly specify view location
             return View("~/Views/Admin/Order/Details.cshtml", order);
         }
 
-        // POST: Admin/Order/UpdateStatus
+        // POST: /Admin/Order/UpdateStatus
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, string status)
         {
+            if (!OrderCalculationHelper.IsValidOrderStatus(status))
+            {
+                TempData["ErrorMessage"] = "Invalid order status provided.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
+            {
                 return NotFound();
+            }
 
-            // Update status
-            order.Status = status;
+            order.Status = status.Trim();
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", new { id });
+            TempData["SuccessMessage"] = $"Order #{order.Id} status updated to '{order.Status}'.";
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 }
