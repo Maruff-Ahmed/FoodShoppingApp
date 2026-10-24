@@ -1,0 +1,125 @@
+﻿<div class="container py-5">
+
+    <h2 class="text-center mb-5 fw-bold"
+        style="letter-spacing:1px; color:#2b2b2b;">
+        Food Shopping System
+    </h2>
+
+    <div class="row justify-content-center gx-5">
+
+        <!-- Admin Panel -->
+        <div class="col-md-4">
+            <div class="card h-100 border-0"
+                 style="
+                 background: linear-gradient(145deg,#e0e0e0,#c8c8c8);
+                 border-radius:20px;
+                 box-shadow:0 25px 50px rgba(0,0,0,0.2);
+                 transition: transform 0.3s, box-shadow 0.3s;">
+
+                <div class="card-body text-center p-5">
+
+                    <div class="mb-4"
+                         style="
+                         width:80px;
+                         height:80px;
+                         margin:auto;
+                         border-radius:50%;
+                         background:#343a40;
+                         color:#fff;
+                         display:flex;
+                         align-items:center;
+                         justify-content:center;
+                         font-size:36px;">
+                        ⚙
+                    </div>
+
+                    <h4 class="fw-semibold mb-2 text-dark">
+                        Admin Panel
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        Manage products, categories & orders
+                    </p>
+
+                    <a asp-controller="Admin"
+                       asp-action="Login"
+                       class="btn"
+                       style="
+                       border-radius:30px;
+                       padding:12px 30px;
+                       background: center;
+                       color:black;
+                       font-weight:600;
+                       transition: 0.3s;">
+                        Enter Admin
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- User Panel -->
+        <div class="col-md-4">
+            <div class="card h-100 border-0"
+                 style="
+                 background: linear-gradient(145deg,black,#cacaca);
+                 border-radius:20px;
+                 box-shadow:0 25px 50px rgba(0,0,0,0.2);
+                 transition: transform 0.3s, box-shadow 0.3s;">
+
+                <div class="card-body text-center p-5">
+
+                    <div class="mb-4"
+                         style="
+                         width:80px;
+                         height:80px;
+                         margin:auto;
+                         border-radius:50%;
+                         background:#6c757d;
+                         color:#fff;
+                         display:flex;
+                         align-items:center;
+                         justify-content:center;
+                         font-size:36px;">
+                        🛒
+                    </div>
+
+                    <h4 class="fw-semibold mb-2 text-dark">
+                        User Panel
+                    </h4>
+
+                    <p class="text-muted mb-4">
+                        Browse food & place orders easily
+                    </p>
+
+                    <a href="/Shop/Index"
+                       class="btn"
+                       style="
+                       border-radius:30px;
+                       padding:12px 30px;
+                       background: linear-gradient(45deg,#ff3b3f,#000);
+                       color:#fff;
+                       font-weight:600;
+                       transition: 0.3s;">
+                        Enter Shop
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    }
+
+    .btn:hover {
+        background: linear-gradient(45deg,#000,#ff3b3f);
+        color: #fff;
+    }
+</style>

@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div style="
+    max-width: 520px;
+    margin: 60px auto;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    text-align: center;
+">
+
+    <h2 style="color:#2c3e50; margin-bottom:5px;">
+        Welcome, Admin
+    </h2>
+
+    <p style="color:#6c757d; margin-bottom:30px;">
+        Admin Control Panel
+    </p>
+
+    <div style="margin-bottom:15px;">
+        <a asp-controller="Product"
+           asp-action="Index"
+           class="btn btn-primary"
+           style="width:100%; padding:12px;">
+            Manage Products
+        </a>
+    </div>
+
+    <div style="margin-bottom:15px;">
+        <a href="/Admin/Order/Index"
+           class="btn btn-warning"
+           style="width:100%; padding:12px;">
+            Manage Orders
+        </a>
+    </div>
+
+    <form method="post" action="/Admin/Logout">
+        <button type="submit"
+                class="btn btn-danger"
+                style="width:100%; padding:12px;">
+            Logout
+        </button>
+    </form>
+
+</div>

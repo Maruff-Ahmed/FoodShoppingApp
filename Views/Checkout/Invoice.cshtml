@@ -1,0 +1,81 @@
+﻿@model FoodShoppingApp.Models.Order
+
+@{
+    ViewData["Title"] = "Invoice";
+}
+
+<h2 class="mb-4">Order Invoice</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Order ID:</strong> #@Model.Id</p>
+        <p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd MMM yyyy hh:mm tt")</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="badge bg-warning text-dark">@Model.Status</span>
+        </p>
+        <p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Product</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-end">Price</th>
+            <th class="text-end">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td class="text-center">@item.Quantity</td>
+                <td class="text-end">৳ @item.Price</td>
+                <td class="text-end">৳ @(item.Price* item.Quantity)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row justify-content-end">
+    <div class="col-md-4">
+        <table class="table">
+            <tr>
+                <th>Subtotal</th>
+                <td class="text-end">
+                    ৳ @Model.OrderItems.Sum(i => i.Price * i.Quantity)
+                </td>
+            </tr>
+
+            @if (!string.IsNullOrEmpty(Model.DiscountCode))
+            {
+                <tr>
+                    <th>Discount (@Model.DiscountCode)</th>
+                    <td class="text-end text-success">
+                        - ৳ @Model.DiscountAmount
+                    </td>
+                </tr>
+            }
+
+            <tr class="table-success">
+                <th>Total Payable</th>
+                <td class="text-end fw-bold">
+                    ৳ @Model.TotalAmount
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+        Continue Shopping
+    </a>
+
+    <button onclick="window.print()" class="btn btn-secondary">
+        Print Invoice
+    </button>
+</div>

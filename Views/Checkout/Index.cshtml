@@ -1,0 +1,64 @@
+﻿@model FoodShoppingApp.Models.ViewModels.CheckoutViewModel
+
+<h2>Checkout</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.CartItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td>৳ @(item.Product.Price* item.Quantity)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<p><strong>Subtotal:</strong> ৳ @Model.SubTotal</p>
+
+<!-- APPLY DISCOUNT -->
+<form asp-action="ApplyDiscount" method="post" class="mb-3">
+    <div class="input-group">
+        <input asp-for="DiscountCode" class="form-control" placeholder="Enter discount code" />
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+</form>
+
+@if (Model.DiscountAmount > 0)
+{
+    <p class="text-success">
+        Discount Applied: -৳ @Model.DiscountAmount
+    </p>
+}
+
+<h4><strong>Final Total:</strong> ৳ @Model.FinalTotal</h4>
+
+<hr />
+
+<!-- PLACE ORDER (COD) -->
+<form asp-action="PlaceOrder" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Hidden fields to keep discount info -->
+    <input type="hidden" asp-for="DiscountCode" />
+    <input type="hidden" asp-for="DiscountAmount" />
+    <input type="hidden" asp-for="FinalTotal" />
+
+    <p>
+        <strong>Payment Method:</strong> Cash On Delivery
+    </p>
+
+    <button type="submit" class="btn btn-success">
+        Confirm Order
+    </button>
+</form>

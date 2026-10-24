@@ -1,0 +1,58 @@
+﻿@model FoodShoppingApp.Models.Order
+
+<h2>Order Details</h2>
+
+<p><strong>Order ID:</strong> #@Model.Id</p>
+<p><strong>User:</strong> @Model.User?.Email</p>
+<p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+<p><strong>Payment:</strong> @Model.PaymentMethod</p>
+<p><strong>Status:</strong> @Model.Status</p>
+
+@if (!string.IsNullOrEmpty(Model.DiscountCode))
+{
+    <p class="text-success">
+        Discount (@Model.DiscountCode): -৳ @Model.DiscountAmount
+    </p>
+}
+
+<h4>Total Paid: ৳ @Model.TotalAmount</h4>
+
+<hr />
+
+<h4>Order Items</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Quantity</td>
+                <td>৳ @item.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h4>Update Order Status</h4>
+<form asp-action="UpdateStatus" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <select name="status" class="form-control w-25">
+        <option value="Pending" selected="@("Pending" == Model.Status)">Pending</option>
+        <option value="Processing" selected="@("Processing" == Model.Status)">Processing</option>
+        <option value="Delivered" selected="@("Delivered" == Model.Status)">Delivered</option>
+    </select>
+
+    <button class="btn btn-success mt-2">
+        Update Status
+    </button>
+</form>

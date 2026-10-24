@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+
+# Local settings and secrets
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+Properties/serviceDependencies.local.json

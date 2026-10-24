@@ -1,0 +1,63 @@
+﻿@model List<FoodShoppingApp.Models.CartItem>
+
+<h2 class="text-center mb-4 text-danger">🛒 Your Cart</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        Your cart is empty.
+    </div>
+}
+else
+{
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        decimal grandTotal = 0;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        var total = item.Product.Price * item.Quantity;
+                        grandTotal += total;
+
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>৳ @item.Product.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>৳ @total</td>
+                            <td>
+                                <a class="btn btn-outline-danger btn-sm"
+                                   href="/Cart/Remove/@item.Product.Id">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="text-danger mb-0">Grand Total: ৳ @grandTotal</h4>
+        <div>
+            <a class="btn btn-secondary me-2" href="/Shop/Index">
+                Continue Shopping
+            </a>
+            <a class="btn btn-success" href="/Checkout/Index">
+                Proceed to Checkout
+            </a>
+        </div>
+    </div>
+}

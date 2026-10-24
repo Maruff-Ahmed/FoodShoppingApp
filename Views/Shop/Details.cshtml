@@ -1,0 +1,68 @@
+﻿@model FoodShoppingApp.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container-fluid my-5">
+    <div class="card shadow-lg border-0 rounded-4 p-4 w-100" style="min-height: 80vh;">
+        <div class="row g-4 align-items-center">
+            <!-- Product Image -->
+            <div class="col-md-6 text-center">
+                <div class="overflow-hidden rounded-4 mb-3">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid transition-img"
+                         style="max-height:600px; object-fit:cover; width:100%;" />
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-4 display-5">@Model.Name</h1>
+                <h3 class="text-danger fw-bold mb-4">Price: ৳ @Model.Price</h3>
+
+                <p><strong>Category:</strong> <span class="text-primary fs-5">@Model.Category?.Name</span></p>
+
+                <p><strong>Description:</strong></p>
+                <p class="text-muted fs-5">@Model.Description</p>
+
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-4">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <div class="mb-3 d-flex align-items-center gap-3">
+                        <label class="fw-semibold mb-0 fs-5">Quantity:</label>
+                        <input type="number" name="quantity" value="1" min="1" class="form-control fs-5" style="width:120px;" />
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 py-2 fs-5">Add to Cart</button>
+                    <a class="btn btn-secondary btn-lg rounded-pill px-5 py-2 fs-5 ms-3" href="@Url.Action("Index", "Shop")">Back to Products</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Smooth hover zoom for product image */
+    .transition-img {
+        transition: transform 0.3s;
+    }
+
+        .transition-img:hover {
+            transform: scale(1.08);
+        }
+
+    /* Card hover effect */
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    /* Buttons hover effect */
+    .btn-success:hover {
+        background-color: #28a745cc;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c757dcc;
+        color: #fff;
+    }
+</style>
