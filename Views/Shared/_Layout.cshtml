@@ -1,81 +1,254 @@
 @using FoodShoppingApp.Helpers
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FoodShoppingApp</title>
+    <title>@ViewData["Title"] - Urban Fresh Market</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom Design System -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FoodShoppingApp.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2">
+        <!-- 1. TOP ANNOUNCEMENT BAR -->
+        <div class="top-announcement-bar d-none d-md-block">
+            <div class="container d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <span>
+                        <i class="bi bi-geo-alt-fill text-success me-1"></i> Deliver to: <strong class="text-white">Mirpur, Dhaka</strong>
+                    </span>
+                    <span class="text-secondary">•</span>
+                    <span class="top-pill-badge">
+                        <i class="bi bi-truck me-1"></i> Free delivery on orders over ৳ 500
+                    </span>
+                </div>
+                <div class="d-flex align-items-center gap-4">
+                    <span class="text-light">
+                        <i class="bi bi-telephone me-1 text-success"></i> Support: <strong>01888929292</strong>
+                    </span>
+                    <span class="text-secondary">|</span>
+                    <a asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Help Center</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MAIN HEADER (Logo, Live Search, Cart, Profile) -->
+        <div class="grocery-main-header">
             <div class="container">
-                <a class="navbar-brand fw-bold text-danger fs-4" asp-controller="Home" asp-action="Index">
-                    🍔 FoodShoppingApp
-                </a>
+                <div class="row align-items-center g-3">
+                    <!-- Brand Logo -->
+                    <div class="col-6 col-lg-3">
+                        <a class="brand-logo-container" asp-controller="Home" asp-action="Index">
+                            <div class="brand-logo-icon">
+                                🥬
+                            </div>
+                            <div class="brand-logo-text">
+                                <span>Urban Fresh</span>
+                                <span class="brand-tagline">ORGANIC MARKET</span>
+                            </div>
+                        </a>
+                    </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                        aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                    <!-- Search Bar (Desktop) -->
+                    <div class="col-12 col-lg-6 order-3 order-lg-2">
+                        <form asp-controller="Shop" asp-action="Index" method="get" class="header-search-bar">
+                            <select name="categoryId" class="search-cat-select d-none d-sm-block">
+                                <option value="">All Categories</option>
+                                <option value="1">Vegetables</option>
+                                <option value="2">Fruits</option>
+                                <option value="3">Dairy & Eggs</option>
+                                <option value="4">Bakery</option>
+                                <option value="5">Beverages</option>
+                                <option value="6">Meat & Seafood</option>
+                                <option value="7">Fast Food</option>
+                            </select>
+                            <input type="text" name="search" placeholder="Search fresh organic veggies, fruits, dairy, snacks..." aria-label="Search" />
+                            <button type="submit" class="btn-search">
+                                <i class="bi bi-search"></i>
+                                <span class="d-none d-md-inline">Search</span>
+                            </button>
+                        </form>
+                    </div>
 
-                <div class="collapse navbar-collapse" id="navbarMain">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold" asp-controller="Shop" asp-action="Index">Food Menu</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fw-semibold position-relative" asp-controller="Cart" asp-action="Index">
-                                🛒 Cart
+                    <!-- Action Icons (Wishlist, Cart, User) -->
+                    <div class="col-6 col-lg-3 order-2 order-lg-3 d-flex justify-content-end align-items-center gap-2">
+                        <!-- Shopping Cart Action -->
+                        <a asp-controller="Cart" asp-action="Index" class="header-action-pill" title="View Cart">
+                            <div class="header-action-icon">
+                                <i class="bi bi-bag"></i>
                                 @if (CartHelper.GetCartCount(Context.Session) > 0)
                                 {
-                                    <span class="badge rounded-pill bg-danger ms-1">
+                                    <span class="header-badge-count">
                                         @CartHelper.GetCartCount(Context.Session)
                                     </span>
                                 }
-                            </a>
-                        </li>
+                            </div>
+                            <div class="d-none d-xl-flex flex-column text-start">
+                                <small class="text-muted" style="font-size: 0.72rem; line-height: 1;">Shopping Cart</small>
+                                <span class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                    ৳ @CartHelper.GetCartTotal(Context.Session).ToString("0.00")
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- User Profile / Login -->
+                        <partial name="_LoginPartial" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SECONDARY CATEGORY NAVBAR -->
+        <nav class="grocery-subnav d-none d-lg-block">
+            <div class="container d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <!-- Browse Categories Dropdown -->
+                    <div class="dropdown me-3">
+                        <button class="btn-all-categories dropdown-toggle" type="button" id="browseCatDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>All Categories</span>
+                        </button>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-1 py-2" aria-labelledby="browseCatDropdown" style="min-width: 240px;">
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index"><i class="bi bi-collection text-success"></i> <strong>All Grocery Items</strong></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="1">🥦 Fresh Vegetables</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="2">🍎 Organic Fruits</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="3">🥛 Dairy & Eggs</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="4">🥐 Bakery & Bread</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="5">🥤 Cold Beverages</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="6">🥩 Meat & Seafood</a></li>
+                            <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index" asp-route-categoryId="7">🍔 Fast Food Specials</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Direct Navigation Links -->
+                    <div class="d-flex align-items-center">
+                        <a class="nav-link-grocery" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link-grocery" asp-controller="Shop" asp-action="Index">Grocery Shop</a>
+                        <a class="nav-link-grocery" asp-controller="Shop" asp-action="Index" asp-route-categoryId="1">Fresh Vegetables</a>
+                        <a class="nav-link-grocery" asp-controller="Shop" asp-action="Index" asp-route-categoryId="2">Organic Fruits</a>
+                        <a class="nav-link-grocery" asp-controller="Shop" asp-action="Index" asp-route-sortBy="price_asc">Daily Deals</a>
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold" asp-controller="Checkout" asp-action="MyOrders">
-                                    My Orders
-                                </a>
-                            </li>
+                            <a class="nav-link-grocery" asp-controller="Checkout" asp-action="MyOrders">My Orders</a>
                         }
-                    </ul>
+                    </div>
+                </div>
 
-                    <partial name="_LoginPartial" />
+                <!-- Right Hotline Callout -->
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill">
+                        <i class="bi bi-telephone-fill me-1"></i> 24/7 Support: 01888929292
+                    </span>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container main-content-wrapper">
-        <main role="main" class="pb-4">
+    <!-- MAIN BODY CONTENT -->
+    <div class="main-content-wrapper">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted py-3 bg-light mt-auto">
-        <div class="container text-center text-md-between d-md-flex justify-content-between align-items-center">
-            <div>
-                &copy; 2026 <strong>FoodShoppingApp</strong> — Handcrafted food ordering platform.
+    <!-- 4. MODERN MULTI-COLUMN GROCERY FOOTER -->
+    <footer class="grocery-footer">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <!-- Column 1: Brand Info -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="brand-logo-icon" style="width: 36px; height: 36px; font-size: 1.2rem;">
+                            🥬
+                        </div>
+                        <h4 class="fw-bold text-white mb-0">Urban Fresh Market</h4>
+                    </div>
+                    <p class="text-secondary small mb-4 pe-lg-4">
+                        Urban Fresh is your premier online destination for farm-fresh organic produce, dairy essentials, hand-crafted bakery goods, and groceries delivered to your door in 15 minutes.
+                    </p>
+                    <div class="d-flex flex-column gap-2 small">
+                        <div><i class="bi bi-telephone-fill text-success me-2"></i> <strong>Support Hotline:</strong> 01888929292</div>
+                        <div><i class="bi bi-envelope-fill text-success me-2"></i> <strong>Email:</strong> support@urbanfresh.com</div>
+                        <div><i class="bi bi-geo-alt-fill text-success me-2"></i> <strong>Hub:</strong> Mirpur Section 10, Dhaka 1216</div>
+                    </div>
+                </div>
+
+                <!-- Column 2: Top Categories -->
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5>Categories</h5>
+                    <ul class="footer-link-list">
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="1">Fresh Vegetables</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="2">Organic Fruits</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="3">Dairy & Eggs</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4">Bakery & Bread</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="5">Cold Beverages</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="6">Meat & Seafood</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Quick Links -->
+                <div class="col-lg-2 col-md-3 col-6">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-link-list">
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Shop" asp-action="Index">Browse Store</a></li>
+                        <li><a asp-controller="Cart" asp-action="Index">Shopping Cart</a></li>
+                        <li><a asp-controller="Checkout" asp-action="MyOrders">Track Orders</a></li>
+                        <li><a asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                        <li><a asp-controller="Admin" asp-action="Login">Admin Portal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Newsletter & Discount Voucher -->
+                <div class="col-lg-4 col-md-12">
+                    <h5>Get ৳ 100 Discount Voucher</h5>
+                    <p class="text-secondary small mb-3">
+                        Subscribe to get weekly farm-fresh updates, seasonal fruit alerts, and exclusive promo codes.
+                    </p>
+                    <form class="mb-3" onsubmit="event.preventDefault(); alert('Thank you! Use coupon code SAVE10 for 10% off your order.');">
+                        <div class="input-group">
+                            <input type="email" class="form-control rounded-start-pill" placeholder="Enter your email address" required />
+                            <button class="btn btn-primary rounded-end-pill px-4" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-success bg-opacity-20 text-success p-2 rounded-3">
+                            <i class="bi bi-tag-fill me-1"></i> Active Code: <strong>SAVE10</strong>
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div>
-                <a asp-controller="Home" asp-action="Privacy" class="text-muted text-decoration-none me-3">Privacy Policy</a>
-                <a asp-controller="Shop" asp-action="Index" class="text-muted text-decoration-none">Browse Menu</a>
+
+            <!-- Footer Bottom Line -->
+            <div class="footer-bottom-bar d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <div class="text-muted small">
+                    &copy; 2026 <strong>Urban Fresh Market</strong>. Handcrafted fresh food & grocery ordering platform.
+                </div>
+                <div class="d-flex align-items-center gap-3 text-secondary small">
+                    <span>💵 Cash on Delivery</span>
+                    <span>•</span>
+                    <span>🛡️ 100% Quality Guaranteed</span>
+                    <span>•</span>
+                    <span>⚡ 15 Mins Delivery</span>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Bootstrap & jQuery Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,6 +1,54 @@
+/* ==========================================================================
+   FoodShoppingApp - Modern Organic Grocery UI Design System
+   Inspired by Efat Khan / Growmelab Dribbble Concept
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css');
+
+:root {
+  --primary-green: #00B207;
+  --primary-green-dark: #008A05;
+  --primary-green-light: #22C55E;
+  --primary-green-subtle: #EDF7ED;
+  --primary-green-soft: #F0FDF4;
+  --primary-green-border: #BBF7D0;
+
+  --accent-orange: #FF6B00;
+  --accent-orange-hover: #E05E00;
+  --accent-orange-subtle: #FFF3EB;
+  --accent-yellow: #F59E0B;
+
+  --dark-heading: #111827;
+  --dark-body: #374151;
+  --dark-muted: #64748B;
+  --dark-border: #E2E8F0;
+
+  --surface-card: #FFFFFF;
+  --surface-bg: #F8FAFC;
+  --surface-alt: #F1F5F9;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 16px 36px -4px rgba(0, 178, 7, 0.12), 0 6px 12px -2px rgba(0, 0, 0, 0.04);
+  --shadow-floating: 0 20px 40px rgba(0, 0, 0, 0.08);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Base resets & typography */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html {
-  font-size: 14px;
-  position: relative;
+  font-size: 15px;
   min-height: 100%;
 }
 
@@ -11,99 +59,869 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #2b2d42;
-  background-color: #f8f9fa;
+  font-family: var(--font-family);
+  color: var(--dark-body);
+  background-color: var(--surface-bg);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  color: var(--dark-heading);
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--primary-green);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--primary-green-dark);
 }
 
 .main-content-wrapper {
   flex: 1 0 auto;
 }
 
-.footer {
-  flex-shrink: 0;
+/* ==========================================================================
+   TOP ANNOUNCEMENT BAR
+   ========================================================================== */
+.top-announcement-bar {
+  background-color: #0F172A;
+  color: #94A3B8;
+  font-size: 0.825rem;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Card hover animation */
-.food-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+.top-announcement-bar a {
+  color: #CBD5E1;
 }
 
-.food-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12) !important;
+.top-announcement-bar a:hover {
+  color: #FFFFFF;
 }
 
-.food-card-img {
-  transition: transform 0.3s ease;
+.top-pill-badge {
+  background: rgba(0, 178, 7, 0.2);
+  color: #4ADE80;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
 }
 
-.food-card:hover .food-card-img {
-  transform: scale(1.05);
+/* ==========================================================================
+   MAIN HEADER & NAVIGATION
+   ========================================================================== */
+.grocery-main-header {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--dark-border);
+  padding: 16px 0;
 }
 
-/* Feature & portal cards */
-.feature-box {
-  transition: transform 0.2s ease;
-  background: #ffffff;
+.brand-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
 }
 
-.feature-box:hover {
-  transform: translateY(-4px);
+.brand-logo-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #00B207 0%, #10B981 100%);
+  color: #FFFFFF;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 6px 16px rgba(0, 178, 7, 0.3);
 }
 
-.feature-icon {
-  font-size: 2.2rem;
+.brand-logo-text {
+  font-weight: 800;
+  font-size: 1.45rem;
+  color: var(--dark-heading);
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
 }
 
-.portal-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  background: #ffffff;
+.brand-logo-text .brand-tagline {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary-green);
 }
 
-.portal-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+/* Search bar in header */
+.header-search-bar {
+  position: relative;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-pill);
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  transition: all 0.25s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
-.portal-badge {
-  width: 65px;
-  height: 65px;
-  margin: 0 auto;
+.header-search-bar:focus-within {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(0, 178, 7, 0.15);
+}
+
+.header-search-bar .search-cat-select {
+  border: none;
+  background: transparent;
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dark-heading);
+  outline: none;
+  border-right: 1px solid var(--dark-border);
+  max-width: 140px;
+  cursor: pointer;
+}
+
+.header-search-bar input {
+  border: none;
+  outline: none;
+  padding: 10px 16px;
+  width: 100%;
+  font-size: 0.9rem;
+  color: var(--dark-heading);
+}
+
+.header-search-bar input::placeholder {
+  color: #94A3B8;
+}
+
+.header-search-bar .btn-search {
+  background: var(--primary-green);
+  color: #FFFFFF;
+  border: none;
+  padding: 9px 22px;
+  border-radius: var(--radius-pill);
+  margin: 3px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+}
+
+.header-search-bar .btn-search:hover {
+  background: var(--primary-green-dark);
+}
+
+/* Header Action Icons */
+.header-action-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--dark-heading);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+}
+
+.header-action-pill:hover {
+  background: var(--surface-bg);
+  color: var(--primary-green);
+}
+
+.header-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-bg);
+  border: 1px solid var(--dark-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.header-action-pill:hover .header-action-icon {
+  border-color: var(--primary-green);
+  background: var(--primary-green-subtle);
+  color: var(--primary-green);
+}
+
+.header-badge-count {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: var(--accent-orange);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  border: 2px solid #FFFFFF;
 }
 
-/* Form focus glow */
-.form-control:focus, .form-select:focus {
-  border-color: #e63946;
-  box-shadow: 0 0 0 0.25rem rgba(230, 57, 70, 0.18);
+/* Sub-nav / Category Nav bar */
+.grocery-subnav {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--dark-border);
 }
 
-/* Custom button accents */
-.btn-primary {
-  background-color: #e63946;
-  border-color: #e63946;
+.btn-all-categories {
+  background: var(--primary-green);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 12px 24px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  transition: background 0.2s ease;
 }
 
-.btn-primary:hover, .btn-primary:focus {
-  background-color: #d62828;
-  border-color: #d62828;
+.btn-all-categories:hover {
+  background: var(--primary-green-dark);
+  color: #FFFFFF;
+}
+
+.nav-link-grocery {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--dark-heading);
+  padding: 12px 14px;
+  display: inline-block;
+  position: relative;
+}
+
+.nav-link-grocery:hover, .nav-link-grocery.active {
+  color: var(--primary-green);
+}
+
+.nav-link-grocery.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  right: 14px;
+  height: 3px;
+  background: var(--primary-green);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   HERO BANNER SECTION (Inspired by Dribbble concept)
+   ========================================================================== */
+.grocery-hero-wrapper {
+  background: linear-gradient(135deg, #F0FDF4 0%, #E8F8EE 50%, #ECFDF5 100%);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+  padding: 50px 40px;
+  margin-bottom: 45px;
+  border: 1px solid rgba(0, 178, 7, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 178, 7, 0.06);
+}
+
+.hero-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid var(--primary-green-border);
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--primary-green-dark);
+  box-shadow: 0 2px 8px rgba(0, 178, 7, 0.08);
+  margin-bottom: 20px;
+}
+
+.hero-pill-badge .pulsing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary-green);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(0, 178, 7, 0.2);
+}
+
+.hero-display-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--dark-heading);
+  margin-bottom: 18px;
+}
+
+@media (max-width: 768px) {
+  .hero-display-title {
+    font-size: 2.1rem;
+  }
+}
+
+.hero-display-title .highlight-text {
+  color: var(--primary-green);
+  position: relative;
+  display: inline-block;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--dark-body);
+  line-height: 1.6;
+  margin-bottom: 30px;
+  max-width: 540px;
+}
+
+/* Floating Badges on Hero image */
+.hero-floating-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-floating);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: floatSlow 4s ease-in-out infinite alternate;
+  z-index: 3;
+}
+
+.hero-floating-card.top-right {
+  top: 15%;
+  right: 5%;
+}
+
+.hero-floating-card.bottom-left {
+  bottom: 12%;
+  left: 45%;
+}
+
+@keyframes floatSlow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+/* Hero Trust Stats row */
+.hero-trust-row {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  padding-top: 25px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.trust-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   CATEGORY CARDS (Shop By Category)
+   ========================================================================== */
+.category-bubble-card {
+  background: #FFFFFF;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 14px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-bubble-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary-green);
+  box-shadow: var(--shadow-hover);
+}
+
+.category-icon-wrapper {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.category-bubble-card:hover .category-icon-wrapper {
+  transform: scale(1.12);
+}
+
+.category-icon-wrapper img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.category-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--dark-heading);
+  margin-bottom: 4px;
+}
+
+.category-card-count {
+  font-size: 0.78rem;
+  color: var(--dark-muted);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   PRODUCT CARDS (Modern Dribbble Fresh Grocery Card)
+   ========================================================================== */
+.grocery-product-card {
+  background: #FFFFFF;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.grocery-product-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary-green-light);
+  box-shadow: var(--shadow-hover);
+}
+
+.product-image-container {
+  background: #F8FAFC;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  margin-bottom: 14px;
+}
+
+.product-image-container img {
+  max-height: 150px;
+  width: 100%;
+  object-fit: contain;
+  transition: transform 0.35s ease;
+}
+
+.grocery-product-card:hover .product-image-container img {
+  transform: scale(1.08);
+}
+
+/* Discount / Freshness Badges */
+.badge-discount-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--accent-orange);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 6px rgba(255, 107, 0, 0.3);
+  z-index: 2;
+}
+
+.badge-organic-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 178, 7, 0.15);
+  color: var(--primary-green-dark);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  z-index: 2;
+}
+
+.product-category-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--dark-muted);
+  margin-bottom: 4px;
+}
+
+.product-title-link {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--dark-heading);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.7rem;
+}
+
+.product-title-link:hover {
+  color: var(--primary-green);
+}
+
+.product-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  font-size: 0.8rem;
+}
+
+.product-rating-stars {
+  color: var(--accent-yellow);
+}
+
+.product-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--dark-border);
+}
+
+.product-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--dark-heading);
+}
+
+.product-old-price {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  text-decoration: line-through;
+  margin-left: 6px;
+  font-weight: 500;
+}
+
+.btn-add-cart-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-green-subtle);
+  color: var(--primary-green);
+  border: 1px solid var(--primary-green-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-add-cart-circle:hover {
+  background: var(--primary-green);
+  color: #FFFFFF;
+  border-color: var(--primary-green);
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   PROMOTIONAL BANNERS (Triple Banners from Dribbble shot)
+   ========================================================================== */
+.promo-banner-card {
+  border-radius: var(--radius-lg);
+  padding: 30px 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  box-shadow: var(--shadow-md);
+  border: none;
+  transition: transform 0.25s ease;
+}
+
+.promo-banner-card:hover {
+  transform: translateY(-4px);
+}
+
+.promo-banner-green {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: #FFFFFF;
+}
+
+.promo-banner-peach {
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  color: #FFFFFF;
+}
+
+.promo-banner-amber {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  color: #FFFFFF;
+}
+
+.promo-banner-card h3 {
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.promo-code-pill {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   DEAL OF THE DAY COUNTDOWN
+   ========================================================================== */
+.deal-countdown-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.countdown-unit {
+  background: #0F172A;
+  color: #FFFFFF;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+}
+
+.countdown-unit small {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #94A3B8;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   VALUE PROPOSITIONS (Why Choose Us)
+   ========================================================================== */
+.feature-perk-card {
+  background: #FFFFFF;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all 0.25s ease;
+  height: 100%;
+}
+
+.feature-perk-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-green-border);
+}
+
+.feature-perk-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   BUTTONS & FORMS
+   ========================================================================== */
+.btn-primary, .btn-grocery-primary {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 178, 7, 0.25);
+}
+
+.btn-primary:hover, .btn-grocery-primary:hover,
+.btn-primary:focus, .btn-grocery-primary:focus {
+  background-color: var(--primary-green-dark);
+  border-color: var(--primary-green-dark);
+  color: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(0, 178, 7, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-secondary-pill {
+  background-color: #FFFFFF;
+  border: 1px solid var(--dark-border);
+  color: var(--dark-heading);
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary-pill:hover {
+  background-color: var(--surface-bg);
+  border-color: var(--primary-green);
+  color: var(--primary-green);
 }
 
 .btn-outline-primary {
-  color: #e63946;
-  border-color: #e63946;
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  padding: 8px 20px;
 }
 
-.btn-outline-primary:hover, .btn-outline-primary:focus {
-  background-color: #e63946;
-  border-color: #e63946;
-  color: #ffffff;
+.btn-outline-primary:hover {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+  color: #FFFFFF;
+}
+
+.form-control, .form-select {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--dark-border);
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px rgba(0, 178, 7, 0.15);
+}
+
+/* ==========================================================================
+   APP DOWNLOAD & NEWSLETTER SECTION
+   ========================================================================== */
+.newsletter-banner-box {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-radius: var(--radius-xl);
+  padding: 45px;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-banner-box h2 {
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.grocery-footer {
+  background-color: #0F172A;
+  color: #94A3B8;
+  padding-top: 60px;
+  padding-bottom: 25px;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.grocery-footer h5 {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.footer-link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-link-list li {
+  margin-bottom: 10px;
+}
+
+.footer-link-list a {
+  color: #94A3B8;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.footer-link-list a:hover {
+  color: #4ADE80;
+  padding-left: 4px;
+}
+
+.footer-bottom-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 40px;
+  padding-top: 25px;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   HELPERS & BADGES
+   ========================================================================== */
+.badge-status {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.8rem;
 }

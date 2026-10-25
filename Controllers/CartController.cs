@@ -2,6 +2,7 @@ using FoodShoppingApp.Data;
 using FoodShoppingApp.Helpers;
 using FoodShoppingApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodShoppingApp.Controllers
 {
@@ -14,26 +15,56 @@ namespace FoodShoppingApp.Controllers
             _context = context;
         }
 
-        private List<CartItem> GetCart()
-        {
-            return HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
-        }
-
-        private void SaveCart(List<CartItem> cart)
-        {
-            HttpContext.Session.SetObject("Cart", cart);
-        }
-
         // GET: /Cart/Index
-        public IActionResult Index()
+        // Retrieves current product details and authoritative prices from the database
+        public async Task<IActionResult> Index()
         {
-            return View(GetCart());
+            var sessionCart = HttpContext.Session.GetCartItems();
+            if (!sessionCart.Any())
+            {
+                return View(new List<CartItem>());
+            }
+
+            var productIds = sessionCart.Select(c => c.ProductId).Distinct().ToList();
+            var dbProducts = await _context.Products
+                .Include(p => p.Category)
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            var cartItems = new List<CartItem>();
+            var verifiedSessionItems = new List<CartItemDto>();
+
+            foreach (var item in sessionCart)
+            {
+                if (dbProducts.TryGetValue(item.ProductId, out var dbProduct))
+                {
+                    var clampedQty = OrderCalculationHelper.ClampQuantity(item.Quantity);
+                    cartItems.Add(new CartItem
+                    {
+                        Product = dbProduct,
+                        Quantity = clampedQty
+                    });
+
+                    // Sync authoritative database price to minimal session DTO
+                    verifiedSessionItems.Add(new CartItemDto
+                    {
+                        ProductId = dbProduct.Id,
+                        Quantity = clampedQty,
+                        Price = dbProduct.Price
+                    });
+                }
+            }
+
+            // Sync cleaned/verified DTOs back to session (pruning deleted products)
+            HttpContext.Session.SetCartItems(verifiedSessionItems);
+
+            return View(cartItems);
         }
 
         // POST: /Cart/AddToCart
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddToCart(int productId, int quantity = 1)
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {
             if (quantity <= 0 || quantity > 50)
             {
@@ -41,60 +72,64 @@ namespace FoodShoppingApp.Controllers
                 return RedirectToAction("Details", "Shop", new { id = productId });
             }
 
-            var product = _context.Products.FirstOrDefault(p => p.Id == productId);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
             if (product == null)
             {
                 return NotFound();
             }
 
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.Product.Id == productId);
+            var sessionCart = HttpContext.Session.GetCartItems();
+            var item = sessionCart.FirstOrDefault(c => c.ProductId == productId);
 
             if (item == null)
             {
-                cart.Add(new CartItem
+                sessionCart.Add(new CartItemDto
                 {
-                    Product = product,
-                    Quantity = quantity
+                    ProductId = product.Id,
+                    Quantity = quantity,
+                    Price = product.Price
                 });
             }
             else
             {
                 item.Quantity = OrderCalculationHelper.ClampQuantity(item.Quantity + quantity);
+                item.Price = product.Price;
             }
 
-            SaveCart(cart);
+            HttpContext.Session.SetCartItems(sessionCart);
             TempData["SuccessMessage"] = $"Added '{product.Name}' to your cart.";
             return RedirectToAction("Index");
         }
 
         // Quick GET Add for backwards compatibility
         [HttpGet]
-        public IActionResult Add(int id)
+        public async Task<IActionResult> Add(int id)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.Product.Id == id);
+            var sessionCart = HttpContext.Session.GetCartItems();
+            var item = sessionCart.FirstOrDefault(c => c.ProductId == id);
 
             if (item == null)
             {
-                cart.Add(new CartItem
+                sessionCart.Add(new CartItemDto
                 {
-                    Product = product,
-                    Quantity = 1
+                    ProductId = product.Id,
+                    Quantity = 1,
+                    Price = product.Price
                 });
             }
             else
             {
                 item.Quantity = OrderCalculationHelper.ClampQuantity(item.Quantity + 1);
+                item.Price = product.Price;
             }
 
-            SaveCart(cart);
+            HttpContext.Session.SetCartItems(sessionCart);
             TempData["SuccessMessage"] = $"Added '{product.Name}' to your cart.";
             return RedirectToAction("Index");
         }
@@ -104,21 +139,21 @@ namespace FoodShoppingApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult UpdateQuantity(int productId, int quantity)
         {
-            var cart = GetCart();
-            var item = cart.FirstOrDefault(c => c.Product.Id == productId);
+            var sessionCart = HttpContext.Session.GetCartItems();
+            var item = sessionCart.FirstOrDefault(c => c.ProductId == productId);
 
             if (item != null)
             {
                 if (quantity <= 0)
                 {
-                    cart.RemoveAll(c => c.Product.Id == productId);
+                    sessionCart.RemoveAll(c => c.ProductId == productId);
                     TempData["SuccessMessage"] = "Item removed from cart.";
                 }
                 else
                 {
                     item.Quantity = OrderCalculationHelper.ClampQuantity(quantity);
                 }
-                SaveCart(cart);
+                HttpContext.Session.SetCartItems(sessionCart);
             }
 
             return RedirectToAction(nameof(Index));
@@ -129,11 +164,11 @@ namespace FoodShoppingApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int id)
         {
-            var cart = GetCart();
-            var removed = cart.RemoveAll(c => c.Product.Id == id);
+            var sessionCart = HttpContext.Session.GetCartItems();
+            var removed = sessionCart.RemoveAll(c => c.ProductId == id);
             if (removed > 0)
             {
-                SaveCart(cart);
+                HttpContext.Session.SetCartItems(sessionCart);
                 TempData["SuccessMessage"] = "Item removed from cart.";
             }
 

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <ellipse cx="100" cy="180" rx="65" ry="12" fill="#000000" opacity="0.08"/>
+  <!-- Salmon Fillet -->
+  <path d="M50 130 C45 95 80 70 125 70 C155 70 165 95 155 130 C130 150 75 150 50 130 Z" fill="#FB7185"/>
+  <path d="M55 125 C50 98 82 78 122 78 C148 78 156 98 148 125 C125 142 75 142 55 125 Z" fill="#F43F5E"/>
+  <!-- White stripes -->
+  <path d="M75 90 Q90 115 80 135 M95 85 Q110 115 100 140 M115 85 Q130 115 120 138 M135 90 Q145 110 140 130" stroke="#FFE4E6" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- Lemon wedge -->
+  <path d="M130 65 A25 25 0 0 1 155 90 L130 90 Z" fill="#FACC15"/>
+</svg>

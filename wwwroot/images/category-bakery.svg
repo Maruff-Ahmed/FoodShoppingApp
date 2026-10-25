@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <circle cx="60" cy="60" r="54" fill="#FFF7ED"/>
+  <!-- Croissant / Bread -->
+  <path d="M30 68 C35 50 55 40 75 44 C88 47 95 56 90 68 C84 80 68 86 52 84 C38 82 26 78 30 68 Z" fill="#F59E0B"/>
+  <path d="M42 54 C48 46 62 44 74 50 C70 58 60 62 48 58 Z" fill="#D97706" opacity="0.6"/>
+  <path d="M52 64 C58 56 68 56 76 60 C72 68 62 70 54 68 Z" fill="#D97706" opacity="0.4"/>
+  <!-- Bread loaf in back -->
+  <rect x="36" y="66" width="48" height="22" rx="10" fill="#FBBF24" stroke="#D97706" stroke-width="2"/>
+  <line x1="48" y1="70" x2="44" y2="82" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+  <line x1="60" y1="70" x2="56" y2="82" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+  <line x1="72" y1="70" x2="68" y2="82" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>
+</svg>

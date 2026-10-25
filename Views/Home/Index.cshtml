@@ -1,105 +1,605 @@
+@model FoodShoppingApp.Models.ViewModels.HomeViewModel
+
 @{
-    ViewData["Title"] = "Fresh Food Delivery";
+    ViewData["Title"] = "Fresh Organic Groceries & Food Delivery";
 }
 
-<div class="py-5">
+<div class="container py-4">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <!-- HERO SECTION -->
-    <div class="p-5 mb-5 rounded-4 hero-banner text-white shadow-lg position-relative overflow-hidden"
-         style="background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);">
-        <div class="row align-items-center position-relative" style="z-index: 2;">
-            <div class="col-lg-7 py-3">
-                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">🔥 Fast Delivery • 100% Fresh</span>
-                <h1 class="display-4 fw-bold mb-3">Delicious Food Delivered Right To Your Doorstep</h1>
-                <p class="lead mb-4 opacity-90">
-                    Explore handcrafted burgers, cheesy pizzas, crispy fries, and refreshing cold drinks with instant Cash on Delivery checkout.
+    <!-- ================================================================= -->
+    <!-- 1. HERO SECTION (Inspired by Efat Khan / Growmelab Dribbble shot) -->
+    <!-- ================================================================= -->
+    <div class="grocery-hero-wrapper">
+        <div class="row align-items-center position-relative">
+            <!-- Left Hero Content -->
+            <div class="col-lg-6 py-4">
+                <div class="hero-pill-badge">
+                    <span class="pulsing-dot"></span>
+                    <span>100% Organic & Farm Fresh Produce</span>
+                </div>
+
+                <h1 class="hero-display-title">
+                    Fresh Groceries Delivered To Your Doorstep <span class="highlight-text">in 15 Mins</span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Shop hand-picked farm vegetables, sweet seasonal fruits, dairy essentials, and chef-prepared foods delivered in temperature-controlled bags with instant Cash on Delivery.
                 </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow-sm">
-                        🍔 Explore Food Menu
+
+                <!-- CTA Button Cluster -->
+                <div class="d-flex gap-3 flex-wrap mb-4">
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold d-inline-flex align-items-center gap-2">
+                        <span>Shop Groceries Now</span>
+                        <i class="bi bi-arrow-right"></i>
                     </a>
-                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-semibold">
-                        🛒 View Cart
+                    <a asp-controller="Shop" asp-action="Index" asp-route-sortBy="price_asc" class="btn btn-secondary-pill btn-lg px-4 py-3">
+                        <i class="bi bi-fire text-warning me-1"></i> Daily Deals
                     </a>
                 </div>
+
+                <!-- Trust Metrics Row -->
+                <div class="hero-trust-row">
+                    <div class="trust-item">
+                        <div class="trust-icon text-warning">★</div>
+                        <div>
+                            <div class="fw-bold small text-dark">4.9 / 5 Rating</div>
+                            <small class="text-muted" style="font-size: 0.72rem;">15k+ Reviews</small>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon text-success">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold small text-dark">15 Mins</div>
+                            <small class="text-muted" style="font-size: 0.72rem;">Superfast Delivery</small>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon text-success">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold small text-dark">100% Organic</div>
+                            <small class="text-muted" style="font-size: 0.72rem;">Certified Farms</small>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-5 text-center d-none d-lg-block">
-                <div class="display-1" style="font-size: 8rem; filter: drop-shadow(0 15px 20px rgba(0,0,0,0.3));">
-                    🍕
+
+            <!-- Right Hero Visual Art & Floating Cards -->
+            <div class="col-lg-6 text-center position-relative py-3">
+                <div class="position-relative d-inline-block w-100">
+                    <img src="~/images/grocery-hero.svg" alt="Fresh Grocery Basket" class="img-fluid" style="max-height: 440px;" />
+
+                    <!-- Floating Badge 1 (Top Right) -->
+                    <div class="hero-floating-card top-right d-none d-sm-flex">
+                        <div class="rounded-circle bg-warning bg-opacity-20 p-2 text-warning fs-5">
+                            <i class="bi bi-tag-fill"></i>
+                        </div>
+                        <div class="text-start">
+                            <div class="fw-bold text-dark" style="font-size: 0.85rem;">30% OFF Weekend</div>
+                            <small class="text-success fw-bold" style="font-size: 0.75rem;">Coupon: SAVE10</small>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge 2 (Bottom Left) -->
+                    <div class="hero-floating-card bottom-left d-none d-sm-flex">
+                        <div class="rounded-circle bg-success bg-opacity-20 p-2 text-success fs-5">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <div class="text-start">
+                            <div class="fw-bold text-dark" style="font-size: 0.85rem;">Express Courier</div>
+                            <small class="text-muted" style="font-size: 0.75rem;">Under 30 Mins</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- QUICK HIGHLIGHTS -->
-    <div class="row g-4 mb-5 text-center">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
-                <div class="feature-icon mb-3">⚡</div>
-                <h5 class="fw-bold">Fast & Hot Delivery</h5>
-                <p class="text-muted small mb-0">Every meal is prepared on order and packaged to ensure oven-hot crispiness upon arrival.</p>
+    <!-- ================================================================= -->
+    <!-- 2. VALUE PROPOSITIONS STRIP (4 Pillars)                           -->
+    <!-- ================================================================= -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-perk-card">
+                <div class="feature-perk-icon bg-success bg-opacity-10 text-success">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Free Shipping</h6>
+                    <small class="text-muted">On all orders over ৳ 500</small>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
-                <div class="feature-icon mb-3">🏷️</div>
-                <h5 class="fw-bold">Exclusive Coupons</h5>
-                <p class="text-muted small mb-0">Use verified promo codes like <code>SAVE10</code> during checkout to receive instant discounts on every meal.</p>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-perk-card">
+                <div class="feature-perk-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">100% Organic</h6>
+                    <small class="text-muted">Direct from certified farms</small>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 feature-box">
-                <div class="feature-icon mb-3">💵</div>
-                <h5 class="fw-bold">Cash On Delivery</h5>
-                <p class="text-muted small mb-0">No credit card required. Verify your meal delivery first and pay securely with cash.</p>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-perk-card">
+                <div class="feature-perk-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Cash On Delivery</h6>
+                    <small class="text-muted">Pay after inspecting produce</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-perk-card">
+                <div class="feature-perk-icon bg-info bg-opacity-10 text-info">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">24/7 Support</h6>
+                    <small class="text-muted">Call: <strong>01888929292</strong></small>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PORTALS SECTION -->
-    <div class="mb-4 text-center">
-        <h3 class="fw-bold mb-2">Platform Access Portals</h3>
-        <p class="text-muted">Choose your access view below</p>
+    <!-- ================================================================= -->
+    <!-- 3. SHOP BY TOP CATEGORIES (Interactive Pastel Grid)                -->
+    <!-- ================================================================= -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <span class="badge bg-success bg-opacity-15 text-success fw-bold px-3 py-1 rounded-pill mb-2">Categories</span>
+            <h2 class="fw-bold display-6 mb-1">Shop By Top Categories</h2>
+            <p class="text-muted small mb-0">Browse fresh foods sorted into natural dietary aisles</p>
+        </div>
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-primary rounded-pill px-4 fw-semibold d-none d-sm-inline-flex align-items-center gap-1">
+            <span>View All</span>
+            <i class="bi bi-arrow-right"></i>
+        </a>
     </div>
 
-    <div class="row justify-content-center g-4">
-        <!-- Customer Portal -->
-        <div class="col-md-5">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 text-center portal-card">
-                <div class="card-body">
-                    <div class="portal-badge bg-danger bg-opacity-10 text-danger mb-3">🛒</div>
-                    <h4 class="fw-bold mb-2">Customer Storefront</h4>
-                    <p class="text-muted mb-4 small">
-                        Browse the complete food catalog, filter by food categories, adjust cart quantities, and place orders.
-                    </p>
-                    <a asp-controller="Shop" asp-action="Index" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold w-100">
-                        Enter Food Store
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-7 g-3 mb-5">
+        <!-- 1. Fresh Vegetables -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="1" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #E8F8EE;">
+                    <img src="~/images/category-vegetables.svg" alt="Vegetables" onerror="this.src='/images/broccoli.svg';" />
+                </div>
+                <div class="category-card-name">Vegetables</div>
+                <div class="category-card-count">10+ Items</div>
+            </a>
+        </div>
+
+        <!-- 2. Organic Fruits -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="2" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #FEECEB;">
+                    <img src="~/images/category-fruits.svg" alt="Fruits" onerror="this.src='/images/apple.svg';" />
+                </div>
+                <div class="category-card-name">Fresh Fruits</div>
+                <div class="category-card-count">15+ Items</div>
+            </a>
+        </div>
+
+        <!-- 3. Dairy & Eggs -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="3" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #EBF4FF;">
+                    <img src="~/images/category-dairy.svg" alt="Dairy" onerror="this.src='/images/milk.svg';" />
+                </div>
+                <div class="category-card-name">Dairy & Eggs</div>
+                <div class="category-card-count">8+ Items</div>
+            </a>
+        </div>
+
+        <!-- 4. Bakery & Bread -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #FFF7ED;">
+                    <img src="~/images/category-bakery.svg" alt="Bakery" onerror="this.src='/images/bread.svg';" />
+                </div>
+                <div class="category-card-name">Bakery & Bread</div>
+                <div class="category-card-count">6+ Items</div>
+            </a>
+        </div>
+
+        <!-- 5. Cold Beverages -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="5" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #E0F7F6;">
+                    <img src="~/images/category-beverages.svg" alt="Beverages" onerror="this.src='/images/orange-juice.svg';" />
+                </div>
+                <div class="category-card-name">Beverages</div>
+                <div class="category-card-count">12+ Items</div>
+            </a>
+        </div>
+
+        <!-- 6. Meat & Seafood -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="6" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #FFEAE8;">
+                    <img src="~/images/category-meat.svg" alt="Meat" onerror="this.src='/images/salmon.svg';" />
+                </div>
+                <div class="category-card-name">Meat & Fish</div>
+                <div class="category-card-count">5+ Items</div>
+            </a>
+        </div>
+
+        <!-- 7. Fast Food Specials -->
+        <div class="col">
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="7" class="category-bubble-card">
+                <div class="category-icon-wrapper" style="background: #FEF9C3;">
+                    <img src="~/images/category-snacks.svg" alt="Fast Food" onerror="this.src='/images/burger.jpg';" />
+                </div>
+                <div class="category-card-name">Fast Food</div>
+                <div class="category-card-count">9+ Items</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 4. POPULAR FRESH PRODUCTS (Dribbble Product Cards)                 -->
+    <!-- ================================================================= -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-success bg-opacity-15 text-success fw-bold px-3 py-1 rounded-pill mb-2">Featured Produce</span>
+            <h2 class="fw-bold display-6 mb-1">Popular Fresh Groceries</h2>
+            <p class="text-muted small mb-0">Chef recommended fresh arrivals and daily bestselling essentials</p>
+        </div>
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-sm btn-dark rounded-pill px-3">All Items</a>
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="1" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Vegetables</a>
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="2" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Fruits</a>
+            <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="3" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Dairy</a>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+        @if (Model.FeaturedProducts.Any())
+        {
+            @foreach (var prod in Model.FeaturedProducts)
+            {
+                <div class="col">
+                    <div class="grocery-product-card">
+                        <!-- Badges -->
+                        <span class="badge-discount-tag">-20%</span>
+                        <span class="badge-organic-tag">🌱 Organic</span>
+
+                        <!-- Product Thumbnail -->
+                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@prod.Id" class="product-image-container">
+                            <img src="@prod.ImageUrl" alt="@prod.Name" onerror="this.src='/images/tomato.svg';" />
+                        </a>
+
+                        <!-- Category -->
+                        <div class="product-category-label">
+                            @(prod.Category?.Name ?? "Fresh Grocery")
+                        </div>
+
+                        <!-- Title -->
+                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@prod.Id" class="product-title-link">
+                            @prod.Name
+                        </a>
+
+                        <!-- Rating -->
+                        <div class="product-rating-row">
+                            <span class="product-rating-stars">★★★★★</span>
+                            <span class="fw-bold text-dark">4.9</span>
+                            <span class="text-muted">(48)</span>
+                        </div>
+
+                        <!-- Price & Add Action -->
+                        <div class="product-price-row">
+                            <div>
+                                <span class="product-price">৳ @prod.Price.ToString("0.00")</span>
+                                <span class="product-old-price">৳ @((prod.Price * 1.25m).ToString("0.00"))</span>
+                            </div>
+
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@prod.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn-add-cart-circle" title="Add to Cart">
+                                    <i class="bi bi-cart-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Curated Showcase Fallback -->
+            <div class="col">
+                <div class="grocery-product-card">
+                    <span class="badge-discount-tag">-25%</span>
+                    <span class="badge-organic-tag">🌱 100% Organic</span>
+                    <div class="product-image-container">
+                        <img src="~/images/tomato.svg" alt="Organic Tomatoes" />
+                    </div>
+                    <div class="product-category-label">Fresh Vegetables</div>
+                    <h6 class="product-title-link">Farm Fresh Organic Tomatoes (1 kg)</h6>
+                    <div class="product-rating-row">
+                        <span class="product-rating-stars">★★★★★</span>
+                        <span class="fw-bold text-dark">4.9</span>
+                        <span class="text-muted">(124)</span>
+                    </div>
+                    <div class="product-price-row">
+                        <div>
+                            <span class="product-price">৳ 90.00</span>
+                            <span class="product-old-price">৳ 120.00</span>
+                        </div>
+                        <a asp-controller="Shop" asp-action="Index" class="btn-add-cart-circle" title="Add to Cart"><i class="bi bi-cart-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="grocery-product-card">
+                    <span class="badge-discount-tag">-15%</span>
+                    <span class="badge-organic-tag">🌱 Farm Fresh</span>
+                    <div class="product-image-container">
+                        <img src="~/images/broccoli.svg" alt="Fresh Broccoli" />
+                    </div>
+                    <div class="product-category-label">Fresh Vegetables</div>
+                    <h6 class="product-title-link">Crisp Green Broccoli Crown (500g)</h6>
+                    <div class="product-rating-row">
+                        <span class="product-rating-stars">★★★★★</span>
+                        <span class="fw-bold text-dark">4.8</span>
+                        <span class="text-muted">(62)</span>
+                    </div>
+                    <div class="product-price-row">
+                        <div>
+                            <span class="product-price">৳ 120.00</span>
+                            <span class="product-old-price">৳ 140.00</span>
+                        </div>
+                        <a asp-controller="Shop" asp-action="Index" class="btn-add-cart-circle" title="Add to Cart"><i class="bi bi-cart-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="grocery-product-card">
+                    <span class="badge-discount-tag">-20%</span>
+                    <span class="badge-organic-tag">🌱 Sweet Orchard</span>
+                    <div class="product-image-container">
+                        <img src="~/images/apple.svg" alt="Royal Gala Apples" />
+                    </div>
+                    <div class="product-category-label">Organic Fruits</div>
+                    <h6 class="product-title-link">Crisp Royal Gala Apples (1 kg)</h6>
+                    <div class="product-rating-row">
+                        <span class="product-rating-stars">★★★★★</span>
+                        <span class="fw-bold text-dark">4.9</span>
+                        <span class="text-muted">(88)</span>
+                    </div>
+                    <div class="product-price-row">
+                        <div>
+                            <span class="product-price">৳ 180.00</span>
+                            <span class="product-old-price">৳ 220.00</span>
+                        </div>
+                        <a asp-controller="Shop" asp-action="Index" class="btn-add-cart-circle" title="Add to Cart"><i class="bi bi-cart-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="grocery-product-card">
+                    <span class="badge-discount-tag">-10%</span>
+                    <span class="badge-organic-tag">🌱 Pure Dairy</span>
+                    <div class="product-image-container">
+                        <img src="~/images/milk.svg" alt="Whole Milk" />
+                    </div>
+                    <div class="product-category-label">Dairy & Eggs</div>
+                    <h6 class="product-title-link">Organic Whole Cow Milk (1 Litre)</h6>
+                    <div class="product-rating-row">
+                        <span class="product-rating-stars">★★★★★</span>
+                        <span class="fw-bold text-dark">5.0</span>
+                        <span class="text-muted">(210)</span>
+                    </div>
+                    <div class="product-price-row">
+                        <div>
+                            <span class="product-price">৳ 95.00</span>
+                            <span class="product-old-price">৳ 105.00</span>
+                        </div>
+                        <a asp-controller="Shop" asp-action="Index" class="btn-add-cart-circle" title="Add to Cart"><i class="bi bi-cart-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 5. TRIPLE PROMOTIONAL BANNERS (From Dribbble shot)                -->
+    <!-- ================================================================= -->
+    <div class="row g-4 mb-5">
+        <!-- Banner 1: Green Organic -->
+        <div class="col-md-4">
+            <div class="promo-banner-card promo-banner-green">
+                <div>
+                    <span class="promo-code-pill">🏷️ Code: SAVE10</span>
+                    <h3>Fresh Organic Vegetables</h3>
+                    <p class="small text-white-50 mb-0">Handpicked pesticide-free farm greens up to 40% OFF</p>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="1" class="btn btn-light rounded-pill px-4 fw-bold text-success shadow-sm">
+                        Shop Now <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Administrator Portal -->
-        <div class="col-md-5">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 text-center portal-card">
-                <div class="card-body">
-                    <div class="portal-badge bg-dark bg-opacity-10 text-dark mb-3">⚙️</div>
-                    <h4 class="fw-bold mb-2">Administration Control</h4>
-                    <p class="text-muted mb-4 small">
-                        Manage catalog items, menu categories, active orders, customer invoices, and promotional coupon codes.
-                    </p>
-                    <a asp-controller="Admin" asp-action="Login" class="btn btn-dark rounded-pill px-4 py-2 fw-semibold w-100">
-                        Enter Admin Portal
+        <!-- Banner 2: Peach Fruits -->
+        <div class="col-md-4">
+            <div class="promo-banner-card promo-banner-peach">
+                <div>
+                    <span class="promo-code-pill">🔥 100% Natural</span>
+                    <h3>Exotic Fresh Fruits & Juices</h3>
+                    <p class="small text-white-50 mb-0">Sweet strawberries, Hass avocados, and fresh cold pressed juice</p>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="2" class="btn btn-light rounded-pill px-4 fw-bold text-warning shadow-sm">
+                        Explore Fruits <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner 3: Warm Bakery & Snacks -->
+        <div class="col-md-4">
+            <div class="promo-banner-card promo-banner-amber">
+                <div>
+                    <span class="promo-code-pill">⚡ Freshly Baked</span>
+                    <h3>Artisan Sourdough & Croissants</h3>
+                    <p class="small text-white-50 mb-0">Oven-crisp breads and pasture-raised farm eggs</p>
+                </div>
+                <div class="mt-4">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-categoryId="4" class="btn btn-light rounded-pill px-4 fw-bold text-warning shadow-sm">
+                        Browse Bakery <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 6. DEAL OF THE DAY COUNTDOWN BANNER                               -->
+    <!-- ================================================================= -->
+    <div class="card border-0 rounded-4 shadow-sm p-4 p-md-5 mb-5" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="badge bg-danger bg-opacity-10 text-danger fw-bold px-3 py-2 rounded-pill mb-3">
+                    🔥 Limited Time Flash Deal
+                </span>
+                <h2 class="display-6 fw-bold mb-3">Special Weekend Super Saver Deals</h2>
+                <p class="text-muted mb-4">
+                    Take advantage of deep discounts on high demand organic goods. These prices reset every midnight or until supplies run out.
+                </p>
+
+                <!-- Live Countdown -->
+                <div class="mb-4">
+                    <div class="small fw-bold text-uppercase text-muted mb-2">Hurry Up! Offer Ends In:</div>
+                    <div class="deal-countdown-box">
+                        <div class="countdown-unit">
+                            <span id="countdownHours">08</span>
+                            <small>Hours</small>
+                        </div>
+                        <span class="fs-4 fw-bold text-muted">:</span>
+                        <div class="countdown-unit">
+                            <span id="countdownMins">45</span>
+                            <small>Mins</small>
+                        </div>
+                        <span class="fs-4 fw-bold text-muted">:</span>
+                        <div class="countdown-unit">
+                            <span id="countdownSecs">28</span>
+                            <small>Secs</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <a asp-controller="Shop" asp-action="Index" asp-route-sortBy="price_asc" class="btn btn-primary rounded-pill px-4 py-2 fw-bold">
+                        Grab Daily Deals
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center">
+                <div class="p-4 bg-light rounded-4 d-inline-block shadow-sm">
+                    <img src="~/images/salmon.svg" alt="Flash Deal Item" style="max-height: 180px;" class="mb-3" />
+                    <h5 class="fw-bold mb-1">Atlantic Fresh Salmon Steak (500g)</h5>
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                        <span class="fs-4 fw-bold text-success">৳ 675.00</span>
+                        <span class="text-muted text-decoration-line-through">৳ 750.00</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-muted">Already Sold: <strong>72 / 100 pcs</strong></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- 7. PLATFORM ACCESS TILES (Customer Store & Admin Portal)          -->
+    <!-- ================================================================= -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card h-100 border-0 rounded-4 p-4 shadow-sm" style="background: #F0FDF4; border: 1px solid #BBF7D0 !important;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-circle bg-success text-white p-3 fs-3">🛒</div>
+                    <div>
+                        <h4 class="fw-bold mb-0">Customer Marketplace</h4>
+                        <small class="text-muted">Explore full catalog & instant COD checkout</small>
+                    </div>
+                </div>
+                <p class="text-secondary small mb-4">
+                    Search farm-fresh produce, filter by organic categories, add goods to your cart, apply verified coupons like <code>SAVE10</code>, and enjoy doorstep delivery.
+                </p>
+                <div class="mt-auto">
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-primary rounded-pill px-4 w-100">
+                        Enter Food & Grocery Store
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 border-0 rounded-4 p-4 shadow-sm" style="background: #F8FAFC; border: 1px solid #E2E8F0 !important;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-circle bg-dark text-white p-3 fs-3">⚙️</div>
+                    <div>
+                        <h4 class="fw-bold mb-0">Administration Hub</h4>
+                        <small class="text-muted">Control catalog, inventory, orders & discounts</small>
+                    </div>
+                </div>
+                <p class="text-secondary small mb-4">
+                    Authorized staff portal to manage grocery products, add menu aisles, update real-time order fulfillment states (Pending, Delivered), and manage coupon discounts.
+                </p>
+                <div class="mt-auto">
+                    <a asp-controller="Admin" asp-action="Login" class="btn btn-dark rounded-pill px-4 w-100">
+                        Access Admin Dashboard
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    // Live countdown timer for Deal of the Day
+    (function () {
+        let hours = 8, mins = 45, secs = 28;
+        setInterval(function () {
+            secs--;
+            if (secs < 0) {
+                secs = 59;
+                mins--;
+                if (mins < 0) {
+                    mins = 59;
+                    hours--;
+                    if (hours < 0) {
+                        hours = 12;
+                    }
+                }
+            }
+            document.getElementById('countdownHours').textContent = hours < 10 ? '0' + hours : hours;
+            document.getElementById('countdownMins').textContent = mins < 10 ? '0' + mins : mins;
+            document.getElementById('countdownSecs').textContent = secs < 10 ? '0' + secs : secs;
+        }, 1000);
+    })();
+</script>
+}

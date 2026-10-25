@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <ellipse cx="100" cy="180" rx="55" ry="12" fill="#000000" opacity="0.08"/>
+  <!-- Carrot body -->
+  <path d="M85 70 C85 62 115 62 115 70 L103 172 C102 176 98 176 97 172 Z" fill="#EA580C"/>
+  <path d="M88 74 C88 67 112 67 112 74 L102 165 C101 169 99 169 98 165 Z" fill="#F97316"/>
+  <!-- Horizontal ridges -->
+  <line x1="90" y1="90" x2="105" y2="92" stroke="#C2410C" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="96" y1="110" x2="110" y2="112" stroke="#C2410C" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="93" y1="130" x2="104" y2="132" stroke="#C2410C" stroke-width="2" stroke-linecap="round"/>
+  <!-- Greens / Foliage -->
+  <path d="M100 65 L100 30 M100 65 L80 35 M100 65 L120 35 M95 48 L75 42 M105 48 L125 42" stroke="#16A34A" stroke-width="4" stroke-linecap="round"/>
+</svg>

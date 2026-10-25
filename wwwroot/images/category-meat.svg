@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <circle cx="60" cy="60" r="54" fill="#FFEAE8"/>
+  <!-- Steak / Salmon -->
+  <path d="M35 60 C32 45 46 36 62 38 C78 40 92 52 88 70 C85 84 66 88 50 84 C38 80 37 70 35 60 Z" fill="#E11D48"/>
+  <path d="M42 58 C40 48 50 42 62 44 C74 46 82 54 80 66 C78 76 64 78 52 76 C44 74 43 66 42 58 Z" fill="#FB7185"/>
+  <!-- Bone / Marbling -->
+  <circle cx="54" cy="56" r="6" fill="#FFFFFF"/>
+  <circle cx="54" cy="56" r="3" fill="#E2E8F0"/>
+  <path d="M64 50 Q72 58 66 68 M74 54 Q78 62 72 72" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>
+</svg>

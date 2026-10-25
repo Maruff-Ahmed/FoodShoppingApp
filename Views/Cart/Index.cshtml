@@ -2,17 +2,34 @@
 
 @{
     ViewData["Title"] = "Your Shopping Cart";
+    decimal grandTotal = 0;
+    foreach (var item in Model)
+    {
+        grandTotal += item.Product.Price * item.Quantity;
+    }
 }
 
 <div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Shop" asp-action="Index" class="text-decoration-none">Grocery Shop</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Shopping Cart</li>
+        </ol>
+    </nav>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">🛒 Shopping Cart</h2>
+        <div>
+            <h1 class="display-6 fw-bold mb-1">🛒 Shopping Cart</h1>
+            <p class="text-muted small mb-0">Review your selected fresh produce and food items</p>
+        </div>
         @if (Model.Any())
         {
             <form asp-action="Clear" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Clear all items from your cart?');">
-                    Clear Cart
+                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3" onclick="return confirm('Clear all items from your cart?');">
+                    <i class="bi bi-trash"></i> Clear All
                 </button>
             </form>
         }
@@ -20,124 +37,184 @@
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            @TempData["ErrorMessage"]
+        <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (!Model.Any())
     {
-        <div class="card shadow-sm border-0 rounded-3 text-center py-5">
-            <div class="card-body">
-                <div class="display-1 text-muted mb-3">🍽️</div>
-                <h4 class="fw-bold">Your cart is currently empty</h4>
-                <p class="text-muted mb-4">Discover delicious food and beverages to add to your order.</p>
-                <a class="btn btn-primary btn-lg rounded-pill px-4" asp-controller="Shop" asp-action="Index">
-                    Browse Food Menu
+        <div class="card border-0 rounded-4 shadow-sm text-center py-5 my-4" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+            <div class="card-body py-5">
+                <div class="display-1 mb-3">🛒</div>
+                <h3 class="fw-bold">Your shopping cart is empty</h3>
+                <p class="text-muted mb-4">You haven't added any fresh groceries or foods to your basket yet.</p>
+                <a class="btn btn-primary btn-lg rounded-pill px-5 fw-bold" asp-controller="Shop" asp-action="Index">
+                    <i class="bi bi-bag-plus me-1"></i> Start Shopping
                 </a>
             </div>
         </div>
     }
     else
     {
-        decimal grandTotal = 0;
-
-        <div class="card shadow-sm border-0 rounded-3 mb-4">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table align-middle table-hover mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th class="ps-3" style="width: 40%;">Product</th>
-                                <th class="text-center" style="width: 20%;">Price</th>
-                                <th class="text-center" style="width: 20%;">Quantity</th>
-                                <th class="text-end" style="width: 15%;">Subtotal</th>
-                                <th class="text-center pe-3" style="width: 5%;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                var lineTotal = item.Product.Price * item.Quantity;
-                                grandTotal += lineTotal;
-
+        <div class="row g-4">
+            <!-- Left: Cart Items Table -->
+            <div class="col-lg-8">
+                <div class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+                    <div class="table-responsive">
+                        <table class="table align-middle table-hover mb-0">
+                            <thead class="table-light border-bottom">
                                 <tr>
-                                    <td class="ps-3">
-                                        <div class="d-flex align-items-center">
-                                            @if (!string.IsNullOrEmpty(item.Product.ImageUrl))
-                                            {
-                                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="rounded me-3" style="width: 55px; height: 55px; object-fit: cover;" onerror="this.src='/favicon.ico';" />
-                                            }
-                                            <div>
-                                                <h6 class="mb-0 fw-bold">@item.Product.Name</h6>
-                                                <small class="text-muted">@item.Product.Category?.Name</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">৳ @item.Product.Price.ToString("0.00")</td>
-                                    <td class="text-center">
-                                        <div class="d-inline-flex align-items-center">
-                                            <!-- Decrement -->
-                                            <form asp-action="UpdateQuantity" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="productId" value="@item.Product.Id" />
-                                                <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2 py-0" title="Decrease">−</button>
-                                            </form>
-
-                                            <span class="mx-2 fw-bold">@item.Quantity</span>
-
-                                            <!-- Increment -->
-                                            <form asp-action="UpdateQuantity" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="productId" value="@item.Product.Id" />
-                                                <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary px-2 py-0" title="Increase">+</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold">৳ @lineTotal.ToString("0.00")</td>
-                                    <td class="text-center pe-3">
-                                        <form asp-action="Remove" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@item.Product.Id" />
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove item">
-                                                ✕
-                                            </button>
-                                        </form>
-                                    </td>
+                                    <th class="ps-4 py-3" style="width: 45%;">Product</th>
+                                    <th class="text-center py-3" style="width: 15%;">Unit Price</th>
+                                    <th class="text-center py-3" style="width: 20%;">Quantity</th>
+                                    <th class="text-end py-3" style="width: 15%;">Subtotal</th>
+                                    <th class="text-center pe-4 py-3" style="width: 5%;"></th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var lineTotal = item.Product.Price * item.Quantity;
+                                    <tr>
+                                        <!-- Product info -->
+                                        <td class="ps-4 py-3">
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name"
+                                                     class="rounded-3 me-3 p-1 border bg-light"
+                                                     style="width: 60px; height: 60px; object-fit: contain;"
+                                                     onerror="this.src='/images/tomato.svg';" />
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">
+                                                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Product.Id" class="text-dark text-decoration-none">
+                                                            @item.Product.Name
+                                                        </a>
+                                                    </h6>
+                                                    <span class="badge bg-light text-muted border small mt-1">
+                                                        @(item.Product.Category?.Name ?? "Item")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Unit Price -->
+                                        <td class="text-center py-3 fw-semibold">
+                                            ৳ @item.Product.Price.ToString("0.00")
+                                        </td>
+
+                                        <!-- Quantity Stepper -->
+                                        <td class="text-center py-3">
+                                            <div class="d-inline-flex align-items-center bg-light border rounded-pill p-1">
+                                                <!-- Decrement -->
+                                                <form asp-action="UpdateQuantity" method="post" class="d-inline m-0">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productId" value="@item.Product.Id" />
+                                                    <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                                    <button type="submit" class="btn btn-sm btn-white rounded-circle shadow-none p-0 text-dark"
+                                                            style="width: 26px; height: 26px; line-height: 1;" title="Decrease">−</button>
+                                                </form>
+
+                                                <span class="mx-3 fw-bold text-dark">@item.Quantity</span>
+
+                                                <!-- Increment -->
+                                                <form asp-action="UpdateQuantity" method="post" class="d-inline m-0">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productId" value="@item.Product.Id" />
+                                                    <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                                    <button type="submit" class="btn btn-sm btn-white rounded-circle shadow-none p-0 text-dark"
+                                                            style="width: 26px; height: 26px; line-height: 1;" title="Increase">+</button>
+                                                </form>
+                                            </div>
+                                        </td>
+
+                                        <!-- Line Total -->
+                                        <td class="text-end py-3 fw-bold text-success">
+                                            ৳ @lineTotal.ToString("0.00")
+                                        </td>
+
+                                        <!-- Remove Item -->
+                                        <td class="text-center pe-4 py-3">
+                                            <form asp-action="Remove" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="productId" value="@item.Product.Id" />
+                                                <button type="submit" class="btn btn-sm btn-light text-danger rounded-circle p-1" title="Remove item">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Shopping reassurance strip -->
+                <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+                    </a>
+                    <span class="text-muted small">
+                        <i class="bi bi-shield-check text-success me-1"></i> Safe & Contactless Packaging
+                    </span>
                 </div>
             </div>
-        </div>
 
-        <div class="row justify-content-between align-items-center">
-            <div class="col-md-6 mb-3 mb-md-0">
-                <a class="btn btn-outline-secondary rounded-pill px-4" asp-controller="Shop" asp-action="Index">
-                    ← Continue Shopping
-                </a>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <div class="card shadow-sm border-0 rounded-3 p-3 d-inline-block text-start w-100" style="max-width: 380px;">
+            <!-- Right: Order Summary -->
+            <div class="col-lg-4">
+                <div class="card border-0 rounded-4 shadow-sm p-4" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+                    <h5 class="fw-bold mb-3">Order Summary</h5>
+
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Estimated Total:</span>
-                        <span class="fs-4 fw-bold text-danger">৳ @grandTotal.ToString("0.00")</span>
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-bold">৳ @grandTotal.ToString("0.00")</span>
                     </div>
-                    <a class="btn btn-success btn-lg w-100 rounded-pill py-2 fw-semibold" asp-controller="Checkout" asp-action="Index">
-                        Proceed to Checkout →
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Estimated Delivery:</span>
+                        @if (grandTotal >= 500)
+                        {
+                            <span class="text-success fw-bold">FREE</span>
+                        }
+                        else
+                        {
+                            <span class="text-dark fw-semibold">৳ 50.00</span>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Payment Method:</span>
+                        <span class="text-dark fw-semibold">Cash On Delivery</span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fs-5 fw-bold">Total:</span>
+                        <span class="fs-4 fw-bold text-success">
+                            ৳ @((grandTotal >= 500 ? grandTotal : grandTotal + 50).ToString("0.00"))
+                        </span>
+                    </div>
+
+                    <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg rounded-pill w-100 py-3 fw-bold mb-3 d-flex align-items-center justify-content-center gap-2">
+                        <span>Proceed to Checkout</span>
+                        <i class="bi bi-arrow-right"></i>
                     </a>
+
+                    <!-- Coupon Tip -->
+                    <div class="p-3 bg-light rounded-3 border small">
+                        <i class="bi bi-tag-fill text-warning me-1"></i>
+                        Have a promo code? Apply <strong>SAVE10</strong> for 10% OFF at checkout!
+                    </div>
                 </div>
             </div>
         </div>

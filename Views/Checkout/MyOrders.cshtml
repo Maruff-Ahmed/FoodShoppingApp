@@ -1,81 +1,95 @@
 @model List<FoodShoppingApp.Models.Order>
 
 @{
-    ViewData["Title"] = "My Orders";
+    ViewData["Title"] = "My Grocery Orders";
 }
 
 <div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">My Orders</li>
+        </ol>
+    </nav>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="fw-bold mb-1">My Orders</h2>
-            <p class="text-muted small mb-0">View your purchase history and order fulfillment status</p>
+            <h1 class="display-6 fw-bold mb-1">📦 My Orders</h1>
+            <p class="text-muted small mb-0">Track your current food shipments and view past receipts</p>
         </div>
-        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-primary rounded-pill px-3">
-            + Place New Order
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-primary rounded-pill px-4 fw-bold">
+            <i class="bi bi-cart-plus me-1"></i> Place New Order
         </a>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="card shadow-sm border-0 rounded-3 text-center py-5">
-            <div class="card-body">
-                <div class="display-3 text-muted mb-3">📦</div>
-                <h4 class="fw-bold">No orders placed yet</h4>
-                <p class="text-muted mb-4">When you place orders, they will show up here along with your invoices.</p>
-                <a class="btn btn-primary rounded-pill px-4" asp-controller="Shop" asp-action="Index">
-                    Start Shopping
+        <div class="card border-0 rounded-4 shadow-sm text-center py-5 my-4" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+            <div class="card-body py-5">
+                <div class="display-2 mb-3">📦</div>
+                <h3 class="fw-bold">No orders placed yet</h3>
+                <p class="text-muted mb-4">You haven't ordered any fresh groceries or meals yet.</p>
+                <a class="btn btn-primary rounded-pill px-5 fw-bold" asp-controller="Shop" asp-action="Index">
+                    Browse Grocery Market
                 </a>
             </div>
         </div>
     }
     else
     {
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th class="ps-3">Order ID</th>
-                                <th>Order Date</th>
-                                <th class="text-center">Status</th>
-                                <th>Payment Method</th>
-                                <th class="text-end">Total Amount</th>
-                                <th class="text-end pe-3">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var order in Model)
+        <div class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light border-bottom">
+                        <tr>
+                            <th class="ps-4 py-3">Order Ref</th>
+                            <th class="py-3">Order Date</th>
+                            <th class="text-center py-3">Status</th>
+                            <th class="py-3">Payment</th>
+                            <th class="text-end py-3">Total Amount</th>
+                            <th class="text-end pe-4 py-3">Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            var badgeClass = order.Status switch
                             {
-                                var badgeClass = order.Status switch
-                                {
-                                    "Pending" => "bg-warning text-dark",
-                                    "Processing" => "bg-info text-dark",
-                                    "Delivered" => "bg-success text-white",
-                                    "Cancelled" => "bg-danger text-white",
-                                    _ => "bg-secondary text-white"
-                                };
+                                "Pending" => "bg-warning text-dark",
+                                "Processing" => "bg-info text-dark",
+                                "Delivered" => "bg-success text-white",
+                                "Cancelled" => "bg-danger text-white",
+                                _ => "bg-secondary text-white"
+                            };
 
-                                <tr>
-                                    <td class="ps-3 fw-bold">#@order.Id</td>
-                                    <td class="text-muted small">@order.OrderDate.ToString("dd MMM yyyy, hh:mm tt")</td>
-                                    <td class="text-center">
-                                        <span class="badge @badgeClass px-2 py-1">
-                                            @order.Status
-                                        </span>
-                                    </td>
-                                    <td>@order.PaymentMethod</td>
-                                    <td class="text-end fw-bold text-danger">৳ @order.TotalAmount.ToString("0.00")</td>
-                                    <td class="text-end pe-3">
-                                        <a asp-action="Invoice" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
-                                            View Invoice
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            <tr>
+                                <td class="ps-4 py-3 fw-bold text-dark">
+                                    #@order.Id
+                                </td>
+                                <td class="py-3 text-muted small">
+                                    @order.OrderDate.ToString("dd MMM yyyy, hh:mm tt")
+                                </td>
+                                <td class="text-center py-3">
+                                    <span class="badge @badgeClass rounded-pill px-3 py-1">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td class="py-3 small text-dark">
+                                    @order.PaymentMethod
+                                </td>
+                                <td class="text-end py-3 fw-bold text-success">
+                                    ৳ @order.TotalAmount.ToString("0.00")
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <a asp-action="Invoice" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        <i class="bi bi-receipt"></i> Invoice
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     }

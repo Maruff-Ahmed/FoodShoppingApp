@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8F8EE" />
+      <stop offset="100%" stop-color="#C6F6D5" />
+    </linearGradient>
+    <linearGradient id="basketGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#92400E" />
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="appleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="100%" stop-color="#B91C1C" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#F97316" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="15" stdDeviation="15" flood-color="#0f5132" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Ambient Organic Circles -->
+  <circle cx="400" cy="300" r="260" fill="url(#bgGlow)" opacity="0.6" />
+  <circle cx="580" cy="180" r="90" fill="#FEF3C7" opacity="0.7" />
+  <circle cx="220" cy="420" r="70" fill="#DCFCE7" opacity="0.8" />
+
+  <!-- Background Leaves -->
+  <path d="M150 180 C180 120 280 140 260 210 C240 280 120 240 150 180 Z" fill="url(#leafGrad)" opacity="0.3" transform="rotate(-20 200 200)" />
+  <path d="M620 320 C670 260 760 290 730 360 C700 430 580 380 620 320 Z" fill="url(#leafGrad)" opacity="0.3" transform="rotate(35 660 340)" />
+
+  <!-- Grocery Basket Base & Shadow -->
+  <ellipse cx="400" cy="490" rx="220" ry="25" fill="#1e293b" opacity="0.12" />
+
+  <!-- Produce in Basket -->
+  <!-- Broccoli / Greens -->
+  <g filter="url(#softShadow)">
+    <!-- Lettuce back -->
+    <path d="M280 280 Q320 210 370 270 Q430 200 470 280 Q400 320 280 280 Z" fill="#10B981" />
+    <path d="M295 270 Q335 225 365 265 Q415 215 450 275" stroke="#059669" stroke-width="4" fill="none" />
+
+    <!-- Pineapple / Exotic fruit behind -->
+    <ellipse cx="500" cy="270" rx="55" ry="80" fill="#F59E0B" transform="rotate(15 500 270)" />
+    <!-- Pineapple leaves -->
+    <path d="M510 190 L530 110 L505 160 L490 90 L480 160 L450 120 L470 190 Z" fill="#10B981" />
+
+    <!-- Big Fresh Tomato -->
+    <circle cx="340" cy="340" r="60" fill="url(#appleGrad)" />
+    <path d="M340 280 L335 260 L345 260 Z" fill="#047857" />
+    <path d="M340 280 Q330 268 315 272 M340 280 Q350 268 365 272 M340 280 Q325 285 320 295 M340 280 Q355 285 360 295" stroke="#059669" stroke-width="4" fill="none" stroke-linecap="round" />
+    <ellipse cx="320" cy="320" rx="15" ry="8" fill="#FFFFFF" opacity="0.3" transform="rotate(-30 320 320)" />
+
+    <!-- Fresh Orange -->
+    <circle cx="450" cy="350" r="55" fill="url(#orangeGrad)" />
+    <ellipse cx="435" cy="330" rx="12" ry="6" fill="#FFFFFF" opacity="0.3" transform="rotate(-30 435 330)" />
+    <!-- Orange leaf -->
+    <path d="M450 295 Q465 280 480 290 Q470 305 450 295 Z" fill="#059669" />
+
+    <!-- Crisp Yellow Bananas -->
+    <path d="M230 380 Q250 300 320 310 Q260 330 245 410 Z" fill="#FBBF24" />
+    <path d="M245 390 Q270 315 340 325 Q275 350 260 420 Z" fill="#FDE047" />
+
+    <!-- Avocado -->
+    <ellipse cx="400" cy="370" rx="42" ry="55" fill="#3F6212" />
+    <ellipse cx="400" cy="372" rx="34" ry="46" fill="#A3E635" />
+    <circle cx="400" cy="385" r="22" fill="#78350F" />
+
+    <!-- Milk / Beverage Bottle in back -->
+    <rect x="250" y="220" width="60" height="120" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="3" />
+    <rect x="265" y="195" width="30" height="25" rx="5" fill="#00B207" />
+    <rect x="255" y="255" width="50" height="40" rx="6" fill="#E0F2FE" />
+    <text x="280" y="280" font-family="Arial" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">MILK</text>
+  </g>
+
+  <!-- Modern Front Grocery Woven Basket -->
+  <g filter="url(#softShadow)">
+    <path d="M230 370 L260 480 Q400 500 540 480 L570 370 Q400 395 230 370 Z" fill="url(#basketGrad)" />
+    <!-- Basket Rim -->
+    <path d="M220 370 Q400 395 580 370 Q400 385 220 370 Z" fill="#B45309" stroke="#78350F" stroke-width="2" />
+    <!-- Basket Weave lines -->
+    <path d="M270 385 L290 475 M330 388 L345 483 M400 390 L400 488 M470 388 L455 483 M530 385 L510 475" stroke="#78350F" stroke-width="3" opacity="0.4" />
+    <path d="M245 420 Q400 440 555 420 M255 450 Q400 470 545 450" stroke="#78350F" stroke-width="3" opacity="0.4" fill="none" />
+  </g>
+
+  <!-- Foreground Floating Leaf Accents -->
+  <path d="M200 440 C170 410 180 360 220 375 C210 420 180 435 200 440 Z" fill="#10B981" filter="url(#softShadow)" />
+  <path d="M580 450 C620 420 630 370 590 380 C600 430 610 445 580 450 Z" fill="#059669" filter="url(#softShadow)" />
+
+  <!-- Sparkles -->
+  <path d="M190 260 L195 245 L200 260 L215 265 L200 270 L195 285 L190 270 L175 265 Z" fill="#FBBF24" />
+  <path d="M600 220 L603 210 L606 220 L616 223 L606 226 L603 236 L600 226 L590 223 Z" fill="#10B981" />
+</svg>

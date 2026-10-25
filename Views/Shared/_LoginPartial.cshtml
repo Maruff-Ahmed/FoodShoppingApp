@@ -1,32 +1,62 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 
-<ul class="navbar-nav align-items-center">
+<div class="d-flex align-items-center gap-2">
 @if (SignInManager.IsSignedIn(User))
 {
     @if (User.IsInRole("Admin"))
     {
-        <li class="nav-item me-2">
-            <a class="btn btn-sm btn-outline-warning" asp-controller="Admin" asp-action="Dashboard">⚙ Admin Panel</a>
-        </li>
+        <a class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-bold" asp-controller="Admin" asp-action="Dashboard">
+            ⚙️ Admin Panel
+        </a>
     }
-    <li class="nav-item me-2">
-        <span class="navbar-text text-dark fw-semibold">Hello, @(User.Identity?.Name?.Split('@')[0] ?? "User")!</span>
-    </li>
-    <li class="nav-item">
-        <form class="d-inline" asp-controller="Account" asp-action="Logout" method="post">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
-        </form>
-    </li>
+
+    <div class="dropdown">
+        <button class="btn btn-sm btn-light border rounded-pill px-3 py-1 fw-bold dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                @(User.Identity?.Name?.Substring(0, 1).ToUpper() ?? "U")
+            </span>
+            <span>@(User.Identity?.Name?.Split('@')[0] ?? "Account")</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2" aria-labelledby="userMenuBtn">
+            <li>
+                <a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Checkout" asp-action="MyOrders">
+                    <i class="bi bi-bag-check text-success"></i> My Orders
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Cart" asp-action="Index">
+                    <i class="bi bi-cart text-primary"></i> View Cart
+                </a>
+            </li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item py-2 d-flex align-items-center gap-2" asp-controller="Admin" asp-action="Dashboard">
+                        <i class="bi bi-speedometer2 text-warning"></i> Admin Dashboard
+                    </a>
+                </li>
+            }
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
+                        <i class="bi bi-box-arrow-right"></i> Sign Out
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
 }
 else
 {
-    <li class="nav-item me-1">
-        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="btn btn-sm btn-primary px-3" asp-controller="Account" asp-action="Login">Login</a>
-    </li>
+    <a class="btn btn-sm btn-light border rounded-pill px-3 fw-semibold text-dark" asp-controller="Account" asp-action="Login">
+        <i class="bi bi-person"></i> Sign In
+    </a>
+    <a class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold text-white" asp-controller="Account" asp-action="Register">
+        Register
+    </a>
 }
-</ul>
+</div>

@@ -65,21 +65,24 @@ namespace FoodShoppingApp.Controllers
 
         // GET: /Account/Register
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToLocal(returnUrl);
             }
 
+            ViewData["ReturnUrl"] = returnUrl;
             return View(new CustomerRegisterViewModel());
         }
 
         // POST: /Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(CustomerRegisterViewModel model)
+        public async Task<IActionResult> Register(CustomerRegisterViewModel model, string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -105,7 +108,7 @@ namespace FoodShoppingApp.Controllers
                 // Sign in the newly registered customer
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 TempData["SuccessMessage"] = "Welcome! Your account has been created successfully.";
-                return RedirectToAction("Index", "Home");
+                return RedirectToLocal(returnUrl);
             }
 
             foreach (var error in result.Errors)

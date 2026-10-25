@@ -1,20 +1,20 @@
 @model IEnumerable<FoodShoppingApp.Models.Category>
 
 @{
-    ViewData["Title"] = "Category Management";
+    ViewData["Title"] = "Store Category Management";
 }
 
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <div>
-            <h2 class="fw-bold mb-1">Category Management</h2>
-            <p class="text-muted small mb-0">Organize and manage food menu categories</p>
+            <h1 class="display-6 fw-bold mb-1">📁 Store Aisles & Categories</h1>
+            <p class="text-muted small mb-0">Organize food products into natural grocery categories</p>
         </div>
-        <div>
-            <a asp-action="Create" class="btn btn-primary">
-                + Add New Category
+        <div class="d-flex gap-2">
+            <a asp-action="Create" class="btn btn-primary rounded-pill px-4 fw-bold">
+                <i class="bi bi-plus-lg me-1"></i> Add New Category
             </a>
-            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-secondary ms-2">
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-secondary rounded-pill px-3">
                 ← Dashboard
             </a>
         </div>
@@ -22,63 +22,69 @@
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible fade show rounded-4" role="alert">
+            <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["ErrorMessage"]
+        <div class="alert alert-danger alert-dismissible fade show rounded-4" role="alert">
+            <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
+    <div class="card border-0 rounded-4 shadow-sm overflow-hidden" style="background: #FFFFFF; border: 1px solid #E2E8F0 !important;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th class="ps-4 py-3" style="width: 15%;">ID</th>
+                        <th class="py-3" style="width: 50%;">Category / Aisle Name</th>
+                        <th class="text-center py-3" style="width: 15%;">Active Products</th>
+                        <th class="text-end pe-4 py-3" style="width: 20%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
                         <tr>
-                            <th class="ps-3" style="width: 15%;">ID</th>
-                            <th style="width: 50%;">Category Name</th>
-                            <th class="text-center" style="width: 15%;">Products Count</th>
-                            <th class="text-end pe-3" style="width: 20%;">Actions</th>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                No categories created yet. Click "+ Add New Category" to begin.
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (!Model.Any())
+                    }
+                    else
+                    {
+                        @foreach (var cat in Model)
                         {
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
-                                    No categories found. Click "Add New Category" to create one.
+                                <td class="ps-4 py-3 text-muted">#@cat.Id</td>
+                                <td class="py-3 fw-bold text-dark fs-6">
+                                    @cat.Name
+                                </td>
+                                <td class="text-center py-3">
+                                    <span class="badge bg-success bg-opacity-15 text-success rounded-pill px-3 py-1">
+                                        @(cat.Products?.Count ?? 0) Items
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4 py-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-outline-secondary rounded-start-pill px-3" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-outline-danger rounded-end-pill px-3" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
-                        else
-                        {
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td class="ps-3 fw-bold text-muted">#@item.Id</td>
-                                    <td class="fw-semibold">@item.Name</td>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary rounded-pill">
-                                            @(item.Products?.Count ?? 0)
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-3">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

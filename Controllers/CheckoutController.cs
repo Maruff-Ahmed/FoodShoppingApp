@@ -14,11 +14,13 @@ namespace FoodShoppingApp.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger<CheckoutController> _logger;
 
-        public CheckoutController(AppDbContext context, UserManager<IdentityUser> userManager)
+        public CheckoutController(AppDbContext context, UserManager<IdentityUser> userManager, ILogger<CheckoutController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // ----------------------
@@ -26,15 +28,15 @@ namespace FoodShoppingApp.Controllers
         // ----------------------
         public async Task<IActionResult> Index()
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart");
+            var sessionCart = HttpContext.Session.GetCartItems();
 
-            if (cart == null || !cart.Any())
+            if (sessionCart == null || !sessionCart.Any())
             {
                 return RedirectToAction("Index", "Cart");
             }
 
             // Sync cart items with current database prices
-            var verifiedCart = await BuildVerifiedCartAsync(cart);
+            var verifiedCart = await BuildVerifiedCartAsync(sessionCart);
             if (!verifiedCart.Any())
             {
                 HttpContext.Session.Remove("Cart");
@@ -42,8 +44,14 @@ namespace FoodShoppingApp.Controllers
                 return RedirectToAction("Index", "Cart");
             }
 
-            // Update session with verified items/prices
-            HttpContext.Session.SetObject("Cart", verifiedCart);
+            // Update session with verified minimal DTOs (never serializing EF Core entity graphs)
+            var verifiedSessionItems = verifiedCart.Select(c => new CartItemDto
+            {
+                ProductId = c.Product.Id,
+                Quantity = c.Quantity,
+                Price = c.Product.Price
+            }).ToList();
+            HttpContext.Session.SetCartItems(verifiedSessionItems);
 
             var subtotal = OrderCalculationHelper.CalculateSubtotal(verifiedCart);
             var checkoutToken = Guid.NewGuid().ToString("N");
@@ -69,14 +77,21 @@ namespace FoodShoppingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApplyDiscount(CheckoutViewModel model)
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart");
+            var sessionCart = HttpContext.Session.GetCartItems();
 
-            if (cart == null || !cart.Any())
+            if (sessionCart == null || !sessionCart.Any())
             {
                 return RedirectToAction("Index", "Cart");
             }
 
-            var verifiedCart = await BuildVerifiedCartAsync(cart);
+            var verifiedCart = await BuildVerifiedCartAsync(sessionCart);
+            if (!verifiedCart.Any())
+            {
+                HttpContext.Session.Remove("Cart");
+                TempData["ErrorMessage"] = "The products in your cart are no longer available.";
+                return RedirectToAction("Index", "Cart");
+            }
+
             var subtotal = OrderCalculationHelper.CalculateSubtotal(verifiedCart);
             decimal discountAmount = 0m;
             string? appliedCode = null;
@@ -131,9 +146,9 @@ namespace FoodShoppingApp.Controllers
                 return RedirectToAction("MyOrders");
             }
 
-            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart");
+            var sessionCart = HttpContext.Session.GetCartItems();
 
-            if (cart == null || !cart.Any())
+            if (sessionCart == null || !sessionCart.Any())
             {
                 TempData["ErrorMessage"] = "Your cart is empty.";
                 return RedirectToAction("Index", "Cart");
@@ -145,11 +160,8 @@ namespace FoodShoppingApp.Controllers
                 return Challenge();
             }
 
-            // Invalidate checkout token immediately to prevent re-submission race conditions
-            HttpContext.Session.Remove("CheckoutToken");
-
             // Recalculate everything strictly server-side from current database state
-            var productIds = cart.Select(c => c.Product.Id).Distinct().ToList();
+            var productIds = sessionCart.Select(c => c.ProductId).Distinct().ToList();
             var dbProducts = await _context.Products
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
@@ -157,11 +169,11 @@ namespace FoodShoppingApp.Controllers
             var orderItems = new List<OrderItem>();
             decimal subtotal = 0m;
 
-            foreach (var item in cart)
+            foreach (var item in sessionCart)
             {
-                if (!dbProducts.TryGetValue(item.Product.Id, out var dbProduct))
+                if (!dbProducts.TryGetValue(item.ProductId, out var dbProduct))
                 {
-                    TempData["ErrorMessage"] = $"Product '{item.Product.Name}' is no longer available.";
+                    TempData["ErrorMessage"] = "A product in your cart is no longer available.";
                     return RedirectToAction("Index", "Cart");
                 }
 
@@ -223,16 +235,18 @@ namespace FoodShoppingApp.Controllers
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                // Clear the session cart on successful order
+                // Clear the session cart and checkout token only on successful commit
+                HttpContext.Session.Remove("CheckoutToken");
                 HttpContext.Session.Remove("Cart");
 
                 TempData["SuccessMessage"] = $"Thank you! Your order #{order.Id} has been placed successfully.";
                 return RedirectToAction("Invoice", new { id = order.Id });
             }
-            catch
+            catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                TempData["ErrorMessage"] = "An error occurred while processing your order. Please try again.";
+                try { await transaction.RollbackAsync(); } catch { }
+                _logger.LogError(ex, "An error occurred while placing order for user {UserId}", user.Id);
+                TempData["ErrorMessage"] = "Could not place order: " + (ex.InnerException?.Message ?? ex.Message);
                 return RedirectToAction("Index");
             }
         }
@@ -281,24 +295,24 @@ namespace FoodShoppingApp.Controllers
             return View(orders);
         }
 
-        // Helper to reconstruct verified cart from DB
-        private async Task<List<CartItem>> BuildVerifiedCartAsync(List<CartItem> cart)
+        // Helper to reconstruct verified cart from DB using minimal session DTOs
+        private async Task<List<CartItem>> BuildVerifiedCartAsync(List<CartItemDto> sessionCart)
         {
-            var productIds = cart.Select(c => c.Product.Id).Distinct().ToList();
+            var productIds = sessionCart.Select(c => c.ProductId).Distinct().ToList();
             var dbProducts = await _context.Products
                 .Include(p => p.Category)
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
 
             var verifiedList = new List<CartItem>();
-            foreach (var item in cart)
+            foreach (var item in sessionCart)
             {
-                if (dbProducts.TryGetValue(item.Product.Id, out var dbProduct))
+                if (dbProducts.TryGetValue(item.ProductId, out var dbProduct))
                 {
                     verifiedList.Add(new CartItem
                     {
                         Product = dbProduct,
-                        Quantity = Math.Max(1, Math.Min(item.Quantity, 50))
+                        Quantity = OrderCalculationHelper.ClampQuantity(item.Quantity)
                     });
                 }
             }
